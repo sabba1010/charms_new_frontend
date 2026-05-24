@@ -348,11 +348,11 @@ const FullListinfo = () => {
                 className={`
                   group/card bg-white rounded-lg border border-gray-200
                   shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex
-                  ${viewMode === 'list' ? 'flex-row h-48' : 'flex-col'}
+                  ${viewMode === 'list' ? 'flex-col sm:flex-row sm:h-48' : 'flex-col'}
                 `}
               >
                 {/* ── Image ── */}
-                <div className={`relative flex-shrink-0 ${viewMode === 'list' ? 'w-64 h-full' : 'h-[200px] w-full'}`}>
+                <div className={`relative flex-shrink-0 ${viewMode === 'list' ? 'w-full h-[200px] sm:w-64 sm:h-full' : 'h-[200px] w-full'}`}>
                   <Carousel images={listImages} alt={listing.title} isLoggedIn={isLoggedIn} />
 
                   {/* Category pill */}

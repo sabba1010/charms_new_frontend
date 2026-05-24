@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { MapPin, ChevronDown } from 'lucide-react';
+import { MapPin, ChevronDown, Search } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -231,16 +231,16 @@ const FullListbanner = () => {
   };
 
   return (
-    <section className="relative w-full h-[600px] md:h-[600px] border-b border-gray-200">
+    <section className="w-full flex flex-col">
 
-      {/* ── Map background ─────────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      {/* ── Map area ─────────────────────────────────────────────── */}
+      <div className="relative w-full h-[45vh] md:h-[600px] border-b border-gray-200 z-0">
         <MapContainer
           center={mapCenter}
           zoom={10}
-          scrollWheelZoom={true} // Enabled to allow "zoom up down" with wheel
-          dragging={true}
-          touchZoom={true}
+          scrollWheelZoom={false}
+          dragging={!L.Browser.mobile}
+          touchZoom={!L.Browser.mobile}
           doubleClickZoom={true}
           className="h-full w-full"
           zoomControl={false}
@@ -280,48 +280,50 @@ const FullListbanner = () => {
             </Marker>
           )}
         </MapContainer>
+
+        {/* ── Top-left button ────────────────────────────────────────────── */}
+        <div className="absolute top-10 left-6 z-40">
+          <button className="bg-white px-4 py-2 rounded-[20px] shadow-md text-sm font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors border border-gray-200">
+            <span>Show next 4 listings</span>
+            <span className="text-base">→</span>
+          </button>
+        </div>
+
+        {/* ── Custom zoom controls ───────────────────────────────────────── */}
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col">
+          <button
+            onClick={() => map?.zoomIn()}
+            className="bg-white w-8 h-8 flex items-center justify-center rounded-t-md border border-gray-300 shadow-sm font-bold text-gray-600 hover:bg-gray-50 text-lg leading-none transition-colors"
+          >
+            +
+          </button>
+          <button
+            onClick={() => map?.zoomOut()}
+            className="bg-white w-8 h-8 flex items-center justify-center rounded-b-md border border-t-0 border-gray-300 shadow-sm font-bold text-gray-600 hover:bg-gray-50 text-lg leading-none transition-colors"
+          >
+            −
+          </button>
+        </div>
       </div>
 
-      {/* ── Top-left button ────────────────────────────────────────────── */}
-      <div className="absolute top-10 left-6 z-40">
-        <button className="bg-white px-4 py-2 rounded-[20px] shadow-md text-sm font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors border border-gray-200">
-          <span>Show next 4 listings</span>
-          <span className="text-base">→</span>
-        </button>
-      </div>
+      {/* ── Search bar ─────────────────────────────────────────── */}
+      <div className="w-full px-4 md:px-6 py-4 md:py-0 md:-mt-10 relative z-40">
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl md:rounded-full shadow-2xl border border-gray-100 flex flex-col md:flex-row items-stretch md:items-center overflow-visible">
 
-      {/* ── Custom zoom controls ───────────────────────────────────────── */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col">
-        <button
-          onClick={() => map?.zoomIn()}
-          className="bg-white w-8 h-8 flex items-center justify-center rounded-t-md border border-gray-300 shadow-sm font-bold text-gray-600 hover:bg-gray-50 text-lg leading-none transition-colors"
-        >
-          +
-        </button>
-        <button
-          onClick={() => map?.zoomOut()}
-          className="bg-white w-8 h-8 flex items-center justify-center rounded-b-md border border-t-0 border-gray-300 shadow-sm font-bold text-gray-600 hover:bg-gray-50 text-lg leading-none transition-colors"
-        >
-          −
-        </button>
-      </div>
-
-      {/* ── Search bar overlay ─────────────────────────────────────────── */}
-      <div className="absolute bottom-10 left-0 right-0 z-40 px-6">
-        <div className="max-w-5xl mx-auto bg-white rounded-full shadow-2xl border border-gray-100 flex items-center overflow-visible">
-
-          <div className="flex-1 flex flex-col relative px-5 border-r border-gray-200 min-w-0" ref={keywordRef}>
-            <input
-              type="text"
-              placeholder="Type..."
-              value={keyword}
-              onChange={(e) => {
-                setKeyword(e.target.value);
-                setShowSuggestions(true);
-              }}
-              onFocus={() => setShowSuggestions(true)}
-              className="w-full py-4 outline-none text-gray-700 placeholder:text-gray-400 text-sm bg-transparent"
-            />
+          <div className="flex-1 flex flex-col relative px-4 md:px-5 border-b md:border-b-0 md:border-r border-gray-100 min-w-0" ref={keywordRef}>
+            <div className="flex items-center w-full">
+              <input
+                type="text"
+                placeholder="Type..."
+                value={keyword}
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                className="w-full py-2.5 md:py-4 outline-none text-gray-700 placeholder:text-gray-400 text-[13px] md:text-sm font-medium bg-transparent"
+              />
+            </div>
             {showSuggestions && suggestions.length > 0 && (
               <div className="absolute bottom-full mb-2 left-0 right-0 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 py-1 max-h-60 overflow-y-auto">
                 {suggestions.map((sug, idx) => (
@@ -342,15 +344,15 @@ const FullListbanner = () => {
           </div>
 
           {/* Location */}
-          <div className="flex-1 flex items-center px-5 border-r border-gray-200 min-w-0">
+          <div className="flex-1 flex items-center px-4 md:px-5 border-b md:border-b-0 md:border-r border-gray-100 min-w-0">
             <input
               type="text"
               placeholder="Location"
               value={locInput}
               onChange={(e) => setLocInput(e.target.value)}
-              className="w-full py-4 outline-none text-gray-700 placeholder:text-gray-400 text-sm bg-transparent"
+              className="w-full py-2.5 md:py-4 outline-none text-gray-700 placeholder:text-gray-400 text-[13px] md:text-sm font-medium bg-transparent"
             />
-            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" />
+            <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 ml-2" />
           </div>
 
           {/* All Categories — with dropdown */}
@@ -358,7 +360,7 @@ const FullListbanner = () => {
             <button
               id="fl-category-btn"
               onClick={() => setCatOpen(!catOpen)}
-              className="w-full flex items-center justify-between px-5 py-4 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              className="w-full flex items-center justify-between px-4 md:px-5 py-2.5 md:py-4 text-[13px] md:text-sm text-gray-500 hover:text-gray-700 transition-colors font-medium md:font-normal"
             >
               <span className={selectedCat !== 'All Categories' ? 'text-gray-800 font-medium' : ''}>
                 {selectedCat}
@@ -414,12 +416,14 @@ const FullListbanner = () => {
           </div>
 
           {/* Search button */}
-          <button
-            onClick={handleSearchSubmit}
-            className="bg-[#111d21] text-white px-10 py-4 rounded-full font-bold hover:bg-[#1a2e35] transition-all flex-shrink-0 text-sm active:scale-95"
-          >
-            Search
-          </button>
+          <div className="p-2 md:p-0 flex shrink-0">
+            <button
+              onClick={handleSearchSubmit}
+              className="w-full md:w-auto bg-[#111d21] text-white px-8 py-2.5 md:py-4 rounded-xl md:rounded-full font-bold hover:bg-[#1a2e35] transition-all flex-shrink-0 text-[13px] md:text-sm active:scale-95 flex items-center justify-center"
+            >
+              <span>Search</span>
+            </button>
+          </div>
         </div>
       </div>
 
