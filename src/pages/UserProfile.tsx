@@ -237,7 +237,7 @@ const UserProfile = () => {
                   {pets.length === 0 ? (
                     <p className="col-span-3 text-xs text-[#8C8273] italic text-center py-4 bg-[#FDFBF7] rounded-xl border border-[#F3EDE2]">No pets listed yet.</p>
                   ) : (
-                    pets.map((pet, i) => (
+                    pets.map((pet: any, i: number) => (
                       <div key={i} className="group">
                         <div className="h-48 rounded-[1.5rem] overflow-hidden mb-4 shadow-md relative">
                           <img src={pet.img} alt={pet.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
