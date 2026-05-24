@@ -128,6 +128,7 @@ const FullListinfo = () => {
   const [isDistOpen, setIsDistOpen] = useState(false);
   const [radius, setRadius] = useState(5);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [liked, setLiked] = useState<Record<string, boolean>>({});
   const { isLoggedIn } = useAuth();
 
@@ -141,6 +142,17 @@ const FullListinfo = () => {
 
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
+
+  useEffect(() => {
+    // Attempt to fetch user's location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setUserCoords([pos.coords.latitude, pos.coords.longitude]),
+        (err) => console.log('Geolocation permission denied or error', err)
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -208,7 +220,53 @@ const FullListinfo = () => {
       if (listCat !== cat) return false;
     }
 
+    // 4. Distance Radius Filter
+    if (selectedDist !== 'Distance Radius' && userCoords && listing.latitude && listing.longitude) {
+      const appliedRadius = parseInt(selectedDist);
+      if (!isNaN(appliedRadius)) {
+        // Haversine formula for distance in miles
+        const R = 3958.8;
+        const lat1 = userCoords[0];
+        const lon1 = userCoords[1];
+        const lat2 = listing.latitude;
+        const lon2 = listing.longitude;
+
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1 * (Math.PI / 180)) *
+          Math.cos(lat2 * (Math.PI / 180)) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const dist = R * c;
+
+        if (dist > appliedRadius) return false;
+      }
+    }
+
     return true;
+  });
+
+  // Apply sorting
+  const finalListings = [...filteredListings].sort((a, b) => {
+    if (selectedSort === 'Featured') {
+      const aFeatured = a.package === 'premium' || a.package === 'yearly' ? 1 : 0;
+      const bFeatured = b.package === 'premium' || b.package === 'yearly' ? 1 : 0;
+      if (aFeatured !== bFeatured) return bFeatured - aFeatured;
+    }
+    if (selectedSort === 'Newest Listings') {
+      return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+    }
+    if (selectedSort === 'Highest Rated') {
+      return (b.rating || 0) - (a.rating || 0);
+    }
+    if (selectedSort === 'Most Reviewed') {
+      const aReviews = a.reviews?.length || 0;
+      const bReviews = b.reviews?.length || 0;
+      return bReviews - aReviews;
+    }
+    return 0; // Default Order
   });
 
   /* inject slider CSS */
@@ -222,7 +280,7 @@ const FullListinfo = () => {
   const toggleLike = (id: string) =>
     setLiked((p) => ({ ...p, [id]: !p[id] }));
 
-  const closeAll = () => { setIsSortOpen(false); setIsDistOpen(false); };
+  const closeAll = () => { setIsSortOpen(false); setIsDistOpen(false); setIsFiltersOpen(false); };
 
   return (
     <div
@@ -259,7 +317,7 @@ const FullListinfo = () => {
           <div className="relative">
             <button
               id="fl-sort-btn"
-              onClick={() => { setIsSortOpen(!isSortOpen); setIsDistOpen(false); }}
+              onClick={() => { setIsSortOpen(!isSortOpen); setIsDistOpen(false); setIsFiltersOpen(false); }}
               className="flex items-center gap-0.5 text-[13px] font-semibold text-[#131B25] hover:text-black transition-colors"
             >
               {selectedSort}
@@ -284,7 +342,7 @@ const FullListinfo = () => {
           <div className="relative">
             <button
               id="fl-dist-btn"
-              onClick={() => { setIsDistOpen(!isDistOpen); setIsSortOpen(false); }}
+              onClick={() => { setIsDistOpen(!isDistOpen); setIsSortOpen(false); setIsFiltersOpen(false); }}
               className="flex items-center gap-0.5 text-[13px] font-semibold text-[#131B25] hover:text-black transition-colors"
             >
               {selectedDist}
@@ -312,12 +370,28 @@ const FullListinfo = () => {
           </div>
 
           {/* More Filters */}
-          <button
-            id="fl-filters-btn"
-            className="flex items-center gap-0.5 text-[13px] font-semibold text-[#131B25] hover:text-black transition-colors"
-          >
-            More Filters <ChevronDown size={13} className="mt-px" />
-          </button>
+          <div className="relative">
+            <button
+              id="fl-filters-btn"
+              onClick={() => { setIsFiltersOpen(!isFiltersOpen); setIsSortOpen(false); setIsDistOpen(false); }}
+              className="flex items-center gap-0.5 text-[13px] font-semibold text-[#131B25] hover:text-black transition-colors"
+            >
+              More Filters <ChevronDown size={13} className={`mt-px transition-transform ${isFiltersOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {isFiltersOpen && (
+              <div className="absolute right-0 z-50 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 p-4">
+                <p className="text-xs text-gray-500 mb-2">Additional filters (Coming soon)</p>
+                <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                  <input type="checkbox" className="rounded text-gray-900 border-gray-300 focus:ring-gray-900" />
+                  <span className="text-sm font-medium text-gray-700">Open Now</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" className="rounded text-gray-900 border-gray-300 focus:ring-gray-900" />
+                  <span className="text-sm font-medium text-gray-700">Has Verified Badge</span>
+                </label>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -334,8 +408,8 @@ const FullListinfo = () => {
             <div className="w-12 h-12 border-4 border-slate-200 border-t-[#111c1e] rounded-full animate-spin mb-4" />
             <p className="text-sm font-semibold">Loading active listings...</p>
           </div>
-        ) : filteredListings.length > 0 ? (
-          filteredListings.map((listing) => {
+        ) : finalListings.length > 0 ? (
+          finalListings.map((listing) => {
             const listImages = getListingImages(listing);
             const priceText = getListingPrice(listing);
             const locationText = getListingLocation(listing);

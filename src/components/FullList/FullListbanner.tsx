@@ -239,8 +239,8 @@ const FullListbanner = () => {
           center={mapCenter}
           zoom={10}
           scrollWheelZoom={false}
-          dragging={!L.Browser.mobile}
-          touchZoom={!L.Browser.mobile}
+          dragging={true}
+          touchZoom={true}
           doubleClickZoom={true}
           className="h-full w-full"
           zoomControl={false}
