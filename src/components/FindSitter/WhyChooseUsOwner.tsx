@@ -47,12 +47,12 @@ const WhyChooseUsOwner = () => {
     <section className="bg-[#eee9df] py-24 px-6 font-sans">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
-          <span className="text-[13px] font-bold uppercase tracking-widest text-[#1a2e35] mb-4 block">
-            FOR OWNERS
-          </span>
-          <h2 className="text-[40px] lg:text-[40px] font-semibold text-[#1a2e35] font-fraunces leading-tight">
+          <h2 className="text-[40px] font-fraunces font-bold text-[#1a2e35] mb-4">
             The better way to travel
           </h2>
+          <h3 className="text-[20px] font-medium text-[#1a2e35]/90 mb-6">
+            For owners
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
@@ -63,7 +63,7 @@ const WhyChooseUsOwner = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="relative bg-white rounded-[10px] p-6 pt-5 pb-[110px] w-full max-w-[280px] h-full min-h-[280px] mx-auto overflow-hidden flex flex-col items-center text-center shadow-sm group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500"
+              className="relative bg-white rounded-[10px] p-6 pt-5 pb-[110px] w-full max-w-[310px] h-full min-h-[280px] mx-auto overflow-hidden flex flex-col items-center text-center shadow-sm group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500"
               style={{
                 backgroundImage: `url(${cardBg})`,
                 backgroundSize: 'cover',
@@ -78,7 +78,7 @@ const WhyChooseUsOwner = () => {
 
               {/* Title and Description */}
               <div className="relative z-10 flex-1 w-full flex flex-col">
-                <h3 className="text-base font-extrabold text-[#1a2e35] mb-2 leading-tight">
+                <h3 className="text-[18px] font-extrabold text-[#1a2e35] mb-2 leading-tight">
                   {item.title}
                 </h3>
                 <p className="text-[#1a2e35]/80 text-[13px] font-medium leading-relaxed w-full">
