@@ -15,7 +15,7 @@ const SitterOnboarding = () => {
       text: "Create your profile and tell us about yourself",
       icon: searchIcon,
       customWidth: "auto",
-      customHeight: "85px"
+      customHeight: "75px"
     },
     {
       number: "2",
@@ -23,7 +23,7 @@ const SitterOnboarding = () => {
       text: "Apply for ID, address and police clearance by following the steps",
       icon: securityChecksIcon,
       customWidth: "auto",
-      customHeight: "70px"
+      customHeight: "75px"
     },
     {
       number: "3",
@@ -39,7 +39,7 @@ const SitterOnboarding = () => {
       text: "Receive your first booking request",
       icon: houseIcon,
       customWidth: "auto",
-      customHeight: "95px"
+      customHeight: "75px"
     }
   ];
 
