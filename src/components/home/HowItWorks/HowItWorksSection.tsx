@@ -12,25 +12,33 @@ const steps = [
     number: "1",
     title: "Create a listing",
     description: "Create a listing for sitters to apply or find vetted sitters in your area by searching.",
-    icon: searchIcon
+    icon: searchIcon,
+    customWidth: "auto",
+    customHeight: "85px"
   },
   {
     number: "2",
     title: "Connect & Book",
     description: "Review applications. Connect with sitters you like and book.",
-    icon: calendarIcon
+    icon: calendarIcon,
+    customWidth: "auto",
+    customHeight: "75px"
   },
   {
     number: "3",
     title: "Travel with peace of mind",
     description: "Focus on what matters while your home and pets are in safe hands.",
-    icon: houseIcon
+    icon: houseIcon,
+    customWidth: "auto",
+    customHeight: "60px"
   },
   {
     number: "4",
     title: "Rate and Review",
     description: "Share your experience to help the community grow.",
-    icon: StarIcon
+    icon: StarIcon,
+    customWidth: "auto",
+    customHeight: "75px"
   }
 ];
 
@@ -52,13 +60,13 @@ const HowItWorksSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="relative bg-[#fdfdfd] rounded-[10px] p-6 pt-5 w-[280px] h-[240px] mx-auto overflow-hidden flex flex-col items-center text-center shadow-sm group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500"
+              className="relative bg-white rounded-[10px] p-6 pt-5 w-full max-w-[280px] h-[260px] mx-auto overflow-hidden flex flex-col items-center text-center shadow-sm group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500"
             >
-              {/* Background Image with White Opacity Overlay */}
+              {/* Background Image without Gradient to match FindSitterSteps */}
               <div
                 className="absolute inset-0 z-0 pointer-events-none transition-all duration-500 group-hover:opacity-80"
                 style={{
-                  backgroundImage: `linear-gradient(to bottom, rgba(253, 253, 253, 1) 0%, rgba(253, 253, 253, 0.7) 40%, rgba(253, 253, 253, 0.4) 100%), url(${cardBg})`,
+                  backgroundImage: `url(${cardBg})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat'
@@ -71,26 +79,29 @@ const HowItWorksSection = () => {
               </div>
 
               {/* Title and Description at the Top */}
-              <div className="relative z-10">
-                <h3 className="text-[20px] font-extrabold text-[#1a2e35] mb-2 leading-tight">
+              <div className="relative z-10 flex-1 w-full">
+                <h3 className="text-[16px] font-extrabold text-[#1a2e35] mb-2 leading-tight">
                   {step.title}
                 </h3>
-                <p className="text-[#1a2e35]/80 text-[16px] md:text-[17px] font-medium leading-relaxed max-w-[240px] mx-auto">
+                <p className="text-[#1a2e35]/80 text-[13px] font-medium leading-relaxed max-w-[240px] mx-auto">
                   {step.description}
                 </p>
               </div>
 
-              <div className={`mt-auto w-full pt-4 relative z-10 flex justify-center items-end ${index === 1 || index === 3 ? '-mb-6' : ''}`}>
+              {/* Icon Container matching FindSitterSteps exactly */}
+              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-end pb-4 z-10">
                 {typeof step.icon === 'string' ? (
                   <img
                     src={step.icon}
                     alt={step.title}
-                    className={`w-auto object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500 ${index === 3 ? 'h-[75px] max-w-[150px]' : 'h-[85px] max-w-[150px]'
-                      }`}
+                    style={{ width: step.customWidth, height: step.customHeight }}
+                    className="object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <div className={`flex items-end justify-center drop-shadow-md group-hover:scale-110 transition-transform duration-500 ${index === 3 ? 'h-[75px] w-[75px]' : 'h-[85px] w-[85px]'
-                    }`}>
+                  <div 
+                    style={{ width: step.customWidth, height: step.customHeight }}
+                    className="flex items-end justify-center drop-shadow-md group-hover:scale-110 transition-transform duration-500"
+                  >
                     {step.icon}
                   </div>
                 )}

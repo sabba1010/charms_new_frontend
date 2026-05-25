@@ -26,7 +26,7 @@ const HowItWorksHero = () => {
             Care, simplified
           </h2>
           <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium max-w-3xl mx-auto leading-relaxed">
-            From searching to booking to coming home here's exactly what to expect.
+            From your first search to your final booking, Home Paw makes pet and home sitting safe and worry free.
           </p>
         </motion.div>
       </div>

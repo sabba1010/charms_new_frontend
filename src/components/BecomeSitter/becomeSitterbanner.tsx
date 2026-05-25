@@ -31,12 +31,12 @@ const BecomeSitterBanner = () => {
 
                     {/* Sub Heading */}
                     <h2 className="font-fraunces text-2xl md:text-[32px] font-semibold text-white tracking-tight drop-shadow-md mb-4">
-                        Earn by Caring for Pets
+                        Get paid to do what you Love
                     </h2>
 
                     {/* Sentence */}
-                    <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium max-w-none mx-auto leading-relaxed whitespace-nowrap">
-                        Join our platform, connect with pet owners, and earn by providing safe and loving care for pets in your area.
+                    <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium max-w-3xl mx-auto leading-relaxed whitespace-normal">
+                        Care for pets, look after beautiful homes, and enjoy flexible earning opportunities or complimentary stays across South Africa.
                     </p>
                 </motion.div>
             </div>

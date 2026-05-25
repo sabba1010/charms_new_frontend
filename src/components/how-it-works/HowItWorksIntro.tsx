@@ -7,9 +7,9 @@ const HowItWorksIntro = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Image Column */}
           <div className="relative">
-            <img 
-              src={introImg} 
-              alt="Care You Can Count On" 
+            <img
+              src={introImg}
+              alt="Care You Can Count On"
               className="w-full h-[50vh] object-cover rounded-[1.5rem] shadow-lg"
             />
           </div>
@@ -19,31 +19,33 @@ const HowItWorksIntro = () => {
             <h2 className="text-3xl lg:text-4xl font-bold text-[#1a2e35] font-serif leading-tight">
               Care You Can Count On
             </h2>
-            
-            <div className="space-y-4 text-slate-600 text-base leading-relaxed">
+
+            <div className="space-y-4 text-slate-600 text-[15px] leading-relaxed">
               <p>
-                We connect pet owners with trusted, verified sitters in their local area.
-                From finding the right match to booking and communication, everything is
-                designed to be simple, safe, and stress-free.
+                Home Paw connects trusted pet owners and homeowners with caring sitters across South Africa.
+                Whether you need someone to care for your pets and home while you travel, or you're looking to
+                become a sitter yourself, our platform is designed to make the process simple, safe, and reliable for
+                everyone involved.
               </p>
               <p>
-                Whether you're away for a day or a longer trip, you can relax knowing your pet
-                is in caring hands.
+                Pet and home owners can create a listing by selecting the service they need, adding dates, location
+                details, photos, and information about their pets or home. Owners can then review sitter
+                applications, chat with interested sitters, read reviews, and choose the person they feel most
+                comfortable trusting with their pets and property.
               </p>
               <p>
-                Each sitter on our platform is carefully reviewed for reliability, experience, and
-                genuine care. You can browse profiles, read reviews, and choose the sitter that
-                best fits your needs.
+                Sitters can create a profile showcasing their experience, services offered, availability, photos, and
+                verification details. Once registered, sitters can browse listings, apply for opportunities that suit their
+                lifestyle, and connect directly with owners through secure messaging on the platform.
               </p>
               <p>
-                Our secure system lets you connect, ask questions, and book with confidence
-                all in one place. We also ensure clear communication so there are no surprises
-                along the way.
+                Our services are not limited to cats and dogs only. Owners can also find care for birds, rabbits,
+                reptiles, fish, and other small pets depending on the sitter's experience and preferences.
               </p>
               <p>
-                With flexible options and a smooth process, managing your pet's care becomes
-                effortless. Because it's not just about finding a sitter, it's about finding someone
-                who treats your pet like family.
+                While we focus on verified profiles, honest reviews, and building a trusted community, we also
+                encourage both owners and sitters to take sensible safety precautions before confirming any booking
+                or arrangement.
               </p>
             </div>
           </div>

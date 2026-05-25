@@ -31,12 +31,12 @@ const TrustSafety = () => {
         
         {/* Left Content */}
         <div className="flex-1">
-          <span className="text-[15px] font-bold text-black mb-4 block">
-            Trust & safety
-          </span>
-          <h2 className="text-[52px] font-serif font-medium text-black mb-6 leading-[1.1] whitespace-nowrap">
-            Your safety comes first.
+          <h2 className="text-[40px] md:text-[52px] font-fraunces font-semibold text-[#1a2e35] mb-4 leading-[1.1]">
+            Trust <span style={{ fontFamily: 'serif', fontWeight: 600 }}>&</span> safety
           </h2>
+          <h3 className="text-[20px] md:text-[24px] font-medium text-[#1a2e35]/80 mb-6 font-sans">
+            Your safety comes first.
+          </h3>
           <p className="text-[#333333] text-lg leading-relaxed max-w-md">
             We take verification seriously so you can focus on what matters: your pets, your home, your peace of mind.
           </p>
