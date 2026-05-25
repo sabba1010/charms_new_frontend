@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import searchIcon from '../../assets/WhatsApp-Image-search.svg';
 import calendarIcon from '../../assets/WhatsApp-Image-calendar.svg';
 import houseIcon from '../../assets/WhatsApp-Image-House.svg';
+import reviewIcon from '../../assets/logo/remov iocns/Pet_Taxi-removebg-preview.png';
+import verifiedIcon from '../../assets/logo/remov iocns/House_Sitting-removebg-preview.png';
 import cardBg from '../../assets/cardbackground.png';
 
 const WhyChooseUsOwner = () => {
@@ -11,25 +13,33 @@ const WhyChooseUsOwner = () => {
       icon: searchIcon,
       number: "1",
       title: "Find your perfect match",
-      desc: "Search by location, dates and specific needs to find the ideal match for your home and pets."
+      desc: "Search by location, dates and specific needs to find the ideal match for your home and pets.",
+      customWidth: "auto",
+      customHeight: "75px"
+    },
+    {
+      icon: verifiedIcon,
+      number: "2",
+      title: "Verified sitters only",
+      desc: "All sitters must pass a background check and provide ID and address verification.",
+      customWidth: "auto",
+      customHeight: "75px"
     },
     {
       icon: houseIcon,
-      number: "2",
-      title: "Verified sitters only",
-      desc: "All sitters must pass a background check and provide ID and address verification."
-    },
-    {
-      icon: houseIcon, // Using house icon for pets at home
       number: "3",
       title: "Keep your pets at home",
-      desc: "Avoid the stress of boarding by keeping your pets in their own comfortable environment."
+      desc: "Avoid the stress of boarding by keeping your pets in their own comfortable environment.",
+      customWidth: "auto",
+      customHeight: "75px"
     },
     {
-      icon: searchIcon, // Using search for reviews/check
+      icon: reviewIcon,
       number: "4",
       title: "Real community reviews",
-      desc: "Read honest feedback from other pet owners before you book."
+      desc: "Read honest feedback from other pet owners before you book.",
+      customWidth: "auto",
+      customHeight: "75px"
     }
   ];
 
@@ -67,7 +77,7 @@ const WhyChooseUsOwner = () => {
               </div>
 
               {/* Title and Description */}
-              <div className="relative z-10">
+              <div className="relative z-10 flex-1 w-full">
                 <h3 className="text-base font-extrabold text-[#1a2e35] mb-2 leading-tight">
                   {item.title}
                 </h3>
@@ -76,12 +86,13 @@ const WhyChooseUsOwner = () => {
                 </p>
               </div>
 
-              {/* Icon Container with Mountain Background */}
-              <div className="mt-auto w-full pt-4 relative z-10 flex justify-center items-center">
+              {/* Icon Container */}
+              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-end pb-4 z-10">
                 <img
                   src={item.icon}
                   alt={item.title}
-                  className="h-24 w-auto max-w-[120px] object-contain drop-shadow-md transition-all group-hover:scale-110"
+                  style={{ width: item.customWidth, height: item.customHeight }}
+                  className="object-contain drop-shadow-md transition-all group-hover:scale-110"
                 />
               </div>
             </motion.div>
