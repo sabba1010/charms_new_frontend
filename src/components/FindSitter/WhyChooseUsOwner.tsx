@@ -13,7 +13,7 @@ const WhyChooseUsOwner = () => {
       icon: searchIcon,
       number: "1",
       title: "Find your perfect match",
-      desc: "Search by location, dates and specific needs to find the ideal match for your home and pets.",
+      desc: "Create a listing or search by location, dates, services to find trusted sitters perfectly suited for your home and pets.",
       customWidth: "auto",
       customHeight: "75px"
     },
@@ -21,23 +21,23 @@ const WhyChooseUsOwner = () => {
       icon: verifiedIcon,
       number: "2",
       title: "Verified sitters only",
-      desc: "All sitters must pass a background check and provide ID and address verification.",
+      desc: "All sitters go through third party profile verification, including ID and address checks as well as Police clearance, helping you book with greater confidence and peace of mind.",
       customWidth: "auto",
       customHeight: "75px"
     },
     {
       icon: houseIcon,
       number: "3",
-      title: "Keep your pets at home",
-      desc: "Avoid the stress of boarding by keeping your pets in their own comfortable environment.",
+      title: "Flexible Care for every need",
+      desc: "From in-home pet care and boarding to house sitting and holiday home stays, find trusted care options tailored to your lifestyle, travel plans, and your pets needs.",
       customWidth: "auto",
       customHeight: "75px"
     },
     {
       icon: reviewIcon,
       number: "4",
-      title: "Real community reviews",
-      desc: "Read honest feedback from other pet owners before you book.",
+      title: "Trusted Community Reviews",
+      desc: "Read genuine reviews and experience from other homeowners and pet owners before choosing the right sitter for your needs.",
       customWidth: "auto",
       customHeight: "75px"
     }
@@ -63,7 +63,7 @@ const WhyChooseUsOwner = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="relative bg-white rounded-[10px] p-6 pt-5 w-full max-w-[280px] h-[260px] mx-auto overflow-hidden flex flex-col items-center text-center shadow-sm group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500"
+              className="relative bg-white rounded-[10px] p-6 pt-5 pb-[110px] w-full max-w-[280px] h-full min-h-[280px] mx-auto overflow-hidden flex flex-col items-center text-center shadow-sm group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500"
               style={{
                 backgroundImage: `url(${cardBg})`,
                 backgroundSize: 'cover',
@@ -77,11 +77,11 @@ const WhyChooseUsOwner = () => {
               </div>
 
               {/* Title and Description */}
-              <div className="relative z-10 flex-1 w-full">
+              <div className="relative z-10 flex-1 w-full flex flex-col">
                 <h3 className="text-base font-extrabold text-[#1a2e35] mb-2 leading-tight">
                   {item.title}
                 </h3>
-                <p className="text-[#1a2e35]/80 text-[13px] font-medium leading-relaxed max-w-[200px] mx-auto">
+                <p className="text-[#1a2e35]/80 text-[13px] font-medium leading-relaxed w-full">
                   {item.desc}
                 </p>
               </div>

@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import searchIcon from '../../assets/WhatsApp-Image-search.svg';
 import calendarIcon from '../../assets/WhatsApp-Image-calendar.svg';
 import houseIcon from '../../assets/WhatsApp-Image-House.svg';
+import reviewIcon from '../../assets/logo/remov iocns/Pet_Taxi-removebg-preview.png';
+import verifiedIcon from '../../assets/logo/remov iocns/House_Sitting-removebg-preview.png';
 import cardBg from '../../assets/cardbackground.png';
 
 const FindSitterSteps = () => {
@@ -12,25 +14,33 @@ const FindSitterSteps = () => {
       number: "1",
       title: "Search",
       text: "Post your stay or browse local sitters",
-      icon: searchIcon
+      icon: searchIcon,
+      customWidth: "auto",
+      customHeight: "75px"
     },
     {
       number: "2",
       title: "Connect",
       text: "Message sitters and arrange a meet-and-greet",
-      icon: calendarIcon
+      icon: calendarIcon,
+      customWidth: "auto",
+      customHeight: "75px"
     },
     {
       number: "3",
       title: "Book",
       text: "Book with confidence through our secure platform",
-      icon: searchIcon
+      icon: verifiedIcon,
+      customWidth: "auto",
+      customHeight: "75px"
     },
     {
       number: "4",
       title: "Relax",
       text: "Enjoy your trip while your pets are cared for",
-      icon: houseIcon
+      icon: houseIcon,
+      customWidth: "auto",
+      customHeight: "75px"
     }
   ];
 
@@ -68,7 +78,7 @@ const FindSitterSteps = () => {
               </div>
 
               {/* Text Content */}
-              <div className="relative z-10">
+              <div className="relative z-10 flex-1 w-full">
                 <h3 className="text-base font-extrabold text-[#1a2e35] mb-2 leading-tight">
                   {step.title}
                 </h3>
@@ -77,12 +87,13 @@ const FindSitterSteps = () => {
                 </p>
               </div>
 
-              {/* Icon Container with Mountain Background */}
-              <div className="mt-auto w-full pt-4 relative z-10 flex justify-center items-center">
+              {/* Icon Container */}
+              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-end pb-4 z-10">
                 <img
                   src={step.icon}
                   alt={step.title}
-                  className="h-24 w-auto max-w-[120px] object-contain drop-shadow-md transition-all group-hover:scale-110"
+                  style={{ width: step.customWidth, height: step.customHeight }}
+                  className="object-contain drop-shadow-md transition-all group-hover:scale-110"
                 />
               </div>
             </motion.div>
