@@ -136,13 +136,13 @@ const JobsOffered = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full max-w-4xl"
           >
-            <span className="text-white text-sm md:text-base font-semibold mb-3 block tracking-tight uppercase">
-              Jobs Offered
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-[1.1] font-serif">
-              Discover opportunities
+            <h1 className="font-fraunces text-4xl md:text-[50px] font-semibold text-white tracking-tight drop-shadow-xl whitespace-normal md:whitespace-nowrap overflow-visible leading-tight md:leading-normal mb-4">
+              Job Available
             </h1>
-            <p className="text-base md:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto font-normal leading-relaxed">
+            <h2 className="font-fraunces text-2xl md:text-[32px] font-semibold text-white tracking-tight drop-shadow-md mb-4">
+              Discover opportunities nation wide
+            </h2>
+            <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium leading-relaxed max-w-2xl mx-auto">
               Find and apply to pet, house, and security service jobs from our trusted owners.
             </p>
           </motion.div>

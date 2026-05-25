@@ -19,11 +19,13 @@ const HowItWorksHero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <span className="text-white text-lg font-medium mb-4 block opacity-90">How it works</span>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight font-serif">
-            Care, simplified
+          <h1 className="font-fraunces text-4xl md:text-[50px] mt-4 md:mt-10 font-semibold text-white tracking-tight drop-shadow-xl whitespace-normal md:whitespace-nowrap overflow-visible leading-tight md:leading-normal mb-4">
+            How it works
           </h1>
-          <p className="text-lg md:text-xl text-slate-100 max-w-3xl mx-auto opacity-90">
+          <h2 className="font-fraunces text-2xl md:text-[32px] font-semibold text-white tracking-tight drop-shadow-md mb-4">
+            Care, simplified
+          </h2>
+          <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium max-w-3xl mx-auto leading-relaxed">
             From searching to booking to coming home here's exactly what to expect.
           </p>
         </motion.div>

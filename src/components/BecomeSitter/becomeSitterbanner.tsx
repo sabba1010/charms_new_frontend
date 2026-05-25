@@ -24,18 +24,18 @@ const BecomeSitterBanner = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                 >
-                    {/* Small Top Label */}
-                    <span className="text-white text-sm md:text-base font-semibold mb-3 block tracking-tight">
+                    {/* Main Heading */}
+                    <h1 className="font-fraunces text-4xl md:text-[50px] mt-4 md:mt-10 font-semibold text-white tracking-tight drop-shadow-xl whitespace-normal md:whitespace-nowrap overflow-visible leading-tight md:leading-normal mb-4">
                         Become a Sitter
-                    </span>
-
-                    {/* Main Serif Heading */}
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-[1.1] font-serif">
-                        Earn by Caring for Pets
                     </h1>
 
-                    {/* Subtext/Description */}
-                    <p className="text-base md:text-lg lg:text-xl text-white/90 max-w-none mx-auto font-normal leading-relaxed whitespace-nowrap">
+                    {/* Sub Heading */}
+                    <h2 className="font-fraunces text-2xl md:text-[32px] font-semibold text-white tracking-tight drop-shadow-md mb-4">
+                        Earn by Caring for Pets
+                    </h2>
+
+                    {/* Sentence */}
+                    <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium max-w-none mx-auto leading-relaxed whitespace-nowrap">
                         Join our platform, connect with pet owners, and earn by providing safe and loving care for pets in your area.
                     </p>
                 </motion.div>

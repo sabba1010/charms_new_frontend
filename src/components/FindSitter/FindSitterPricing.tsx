@@ -12,10 +12,9 @@ const FindSitterPricing: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="text-[32px] md:text-[42px] lg:text-[48px] font-semibold text-[#1a2e35] uppercase tracking-tight leading-[1.1] max-w-5xl mx-auto font-fraunces"
+                        className="text-[32px] md:text-[42px] lg:text-[48px] font-semibold text-[#1a2e35] tracking-tight leading-[1.1] max-w-5xl mx-auto font-fraunces"
                     >
-                        FIND THE PERFECT SITTER AND <br className="hidden md:block" /> 
-                        ENJOY COMPLETE PEACE OF MIND.
+                        Monthly and yearly plans for pet and home owners.
                     </motion.h2>
                     <div className="w-24 h-1 bg-[#8b8b4e] mx-auto mt-8 rounded-full" />
                 </div>
@@ -35,7 +34,7 @@ const FindSitterPricing: React.FC = () => {
                         </div>
                         <h3 className="text-2xl font-bold text-[#1a2e35] mb-6">Monthly Membership</h3>
                         <div className="flex items-baseline justify-center gap-1">
-                            <span className="text-5xl md:text-7xl font-bold text-[#1a2e35] font-serif">R39</span>
+                            <span className="text-5xl md:text-7xl font-bold text-[#1a2e35] font-serif">R190</span>
                             <span className="text-slate-400 text-xl">/mo</span>
                         </div>
                         <p className="mt-8 text-slate-500 font-medium text-lg italic">
@@ -64,7 +63,7 @@ const FindSitterPricing: React.FC = () => {
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-6">Annual Membership</h3>
                             <div className="flex items-baseline justify-center gap-1">
-                                <span className="text-5xl md:text-7xl font-bold text-white font-serif">R390</span>
+                                <span className="text-5xl md:text-7xl font-bold text-white font-serif">R1900</span>
                                 <span className="text-white/40 text-xl">/yr</span>
                             </div>
                             <p className="mt-8 text-white/70 font-medium text-lg">
