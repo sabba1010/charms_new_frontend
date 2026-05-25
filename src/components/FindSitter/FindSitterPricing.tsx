@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Check } from 'lucide-react';
 
 const FindSitterPricing: React.FC = () => {
     return (
@@ -27,19 +28,29 @@ const FindSitterPricing: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7 }}
-                        className="bg-white p-10 md:p-14 rounded-[40px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] transition-all text-center flex flex-col justify-center min-h-[350px] relative"
+                        className="bg-white p-10 md:p-14 rounded-[40px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] transition-all text-center flex flex-col justify-start min-h-[350px] relative"
                     >
-                        <div className="absolute top-8 left-1/2 -translate-x-1/2 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                            Flexible
+                        <div>
+                            <div className="inline-block text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-8">
+                                Flexible
+                            </div>
                         </div>
                         <h3 className="text-2xl font-bold text-[#1a2e35] mb-6">Monthly Membership</h3>
                         <div className="flex items-baseline justify-center gap-1">
                             <span className="text-5xl md:text-7xl font-bold text-[#1a2e35] font-serif">R190</span>
                             <span className="text-slate-400 text-xl">/mo</span>
                         </div>
-                        <p className="mt-8 text-slate-500 font-medium text-lg italic">
+                        <p className="mt-6 text-slate-500 font-medium text-lg italic border-b border-slate-100 pb-6 mb-6">
                             Pay as you go, cancel anytime.
                         </p>
+                        <div className="flex flex-col items-center">
+                            <ul className="space-y-4 text-left">
+                                <li className="flex items-start gap-3 text-slate-600"><Check className="w-5 h-5 text-[#8b8b4e] shrink-0 mt-0.5" /> <span>Unlimited access to home & pet care</span></li>
+                                <li className="flex items-start gap-3 text-slate-600"><Check className="w-5 h-5 text-[#8b8b4e] shrink-0 mt-0.5" /> <span>No Booking Fees</span></li>
+                                <li className="flex items-start gap-3 text-slate-600"><Check className="w-5 h-5 text-[#8b8b4e] shrink-0 mt-0.5" /> <span>Cancel any time</span></li>
+                                <li className="flex items-start gap-3 text-slate-600"><Check className="w-5 h-5 text-[#8b8b4e] shrink-0 mt-0.5" /> <span>Unlimited listings</span></li>
+                            </ul>
+                        </div>
                     </motion.div>
 
                     {/* Yearly Block */}
@@ -48,7 +59,7 @@ const FindSitterPricing: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, delay: 0.2 }}
-                        className="bg-[#1a2e35] p-10 md:p-14 rounded-[40px] shadow-[0_20px_50px_rgba(26,46,53,0.3)] text-center flex flex-col justify-center min-h-[350px] relative overflow-hidden group"
+                        className="bg-[#1a2e35] p-10 md:p-14 rounded-[40px] shadow-[0_20px_50px_rgba(26,46,53,0.3)] text-center flex flex-col justify-start min-h-[350px] relative overflow-hidden group"
                     >
                         {/* Premium Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#1a2e35] to-[#253d45]" />
@@ -66,9 +77,19 @@ const FindSitterPricing: React.FC = () => {
                                 <span className="text-5xl md:text-7xl font-bold text-white font-serif">R1900</span>
                                 <span className="text-white/40 text-xl">/yr</span>
                             </div>
-                            <p className="mt-8 text-white/70 font-medium text-lg">
+                            <p className="mt-6 text-white/70 font-medium text-lg border-b border-white/10 pb-6 mb-6">
                                 The best way to build your <br className="hidden sm:block" /> sitting reputation.
                             </p>
+                            <div className="flex flex-col items-center">
+                                <ul className="space-y-4 text-left">
+                                    <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>Unlimited access to home & pet care</span></li>
+                                    <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>No Booking fees</span></li>
+                                    <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>Member support</span></li>
+                                    <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>Save 2 months</span></li>
+                                    <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>No monthly renewal or interruptions</span></li>
+                                    <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>Always stay connected for when emergency service is needed.</span></li>
+                                </ul>
+                            </div>
                         </div>
                     </motion.div>
                 </div>
