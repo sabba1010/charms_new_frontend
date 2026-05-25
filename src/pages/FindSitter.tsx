@@ -4,6 +4,7 @@ import FindSitterBanner from '../components/FindSitter/FindSitterBanner';
 import WhyChooseUsOwner from '../components/FindSitter/WhyChooseUsOwner';
 import FindSitterSteps from '../components/FindSitter/FindSitterSteps';
 import FindSitterPricing from '../components/FindSitter/FindSitterPricing';
+import TrustedCareInfoSection from '../components/home/TrustedCareInfoSection';
 //import FeaturedSitters from '../components/home/FeaturedSitters/FeaturedSitters';
 
 const FindSitter: React.FC = () => {
@@ -39,6 +40,7 @@ const FindSitter: React.FC = () => {
       <FindSitterPricing />
 
       <WhyChooseUsOwner />
+      <TrustedCareInfoSection />
       <FindSitterSteps />
 
       {/* Pricing Section */}
