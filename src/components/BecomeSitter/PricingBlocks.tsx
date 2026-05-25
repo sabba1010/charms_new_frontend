@@ -40,7 +40,7 @@ const PricingBlocks = () => {
                             <span className="text-5xl md:text-7xl font-bold text-[#1a2e35] font-serif">R170</span>
                             <span className="text-slate-400 text-xl">/mo</span>
                         </div>
-                        <div className="mt-6 border-b border-[#d4bead] pb-6 mb-6 flex flex-col justify-end h-[84px]">
+                        <div className="mt-6 border-b border-[#d4bead] pb-6 mb-6 flex flex-col justify-start h-[84px]">
                             <p className="text-slate-500 font-medium text-lg italic">
                                 Pay as you go, cancel anytime.
                             </p>
@@ -82,7 +82,7 @@ const PricingBlocks = () => {
                                 <span className="text-5xl md:text-7xl font-bold text-white font-serif">R1700</span>
                                 <span className="text-white/40 text-xl">/yr</span>
                             </div>
-                            <div className="mt-6 border-b border-white/10 pb-6 mb-6 flex flex-col justify-end h-[84px]">
+                            <div className="mt-6 border-b border-white/10 pb-6 mb-6 flex flex-col justify-start h-[84px]">
                                 <p className="text-white/70 font-medium text-lg">
                                     The best way to build your <br className="hidden sm:block" /> sitting reputation.
                                 </p>
