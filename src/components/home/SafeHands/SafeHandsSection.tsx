@@ -36,31 +36,31 @@ const SafeHandsSection = () => {
 
           {/* Left Content */}
           <div className="flex-1 max-w-xl py-4 flex flex-col justify-center">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-xs font-bold tracking-[0.2em] uppercase text-[#1a2e35]/60 mb-4"
-              style={{ fontFamily: '"Inter", sans-serif' }}
-            >
-              Trusted Care Starts Here
-            </motion.p>
-
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-[2.75rem] font-fraunces font-semibold text-[#1a2e35] mb-6 leading-[1.15]"
+              className="text-4xl md:text-[2.75rem] font-fraunces font-semibold text-[#1a2e35] mb-4 leading-[1.15]"
+            >
+              Trusted Care Starts Here
+            </motion.h2>
+
+            <motion.h3
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-[20px] md:text-[22px] font-medium text-[#1a2e35]/90 mb-6"
+              style={{ fontFamily: '"Inter", sans-serif' }}
             >
               Your Pets <span style={{ fontFamily: 'serif', fontWeight: 600 }}>&</span> Home in Safe Hands
-            </motion.h2>
+            </motion.h3>
 
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.15 }}
-              className="text-[#1a2e35]/70 text-[15px] leading-relaxed"
+              className="text-[#1a2e35]/80 text-[18px] leading-relaxed"
               style={{ fontFamily: 'Inter', fontWeight: 400 }}
             >
               At Home Paw, we believe your home and pets deserve trusted and reliable care. Our focus is on

@@ -39,7 +39,7 @@ const HowItWorksSection = () => {
     <section className="bg-[#eee9df] pt-[80px] pb-[80px] font-sans">
       <div className="max-w-[1200px] mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1a2e35] mb-4 font-serif">
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#1a2e35] mb-4 font-fraunces">
             How Home Paw work
           </h2>
         </div>
@@ -100,11 +100,11 @@ const HowItWorksSection = () => {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <button className="bg-[#a3a362] hover:bg-[#8e8e56] text-white px-8 py-3 rounded-lg font-bold text-base shadow-lg transition-all hover:scale-105 active:scale-95">
             Get Started
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );
