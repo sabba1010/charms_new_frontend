@@ -1,23 +1,64 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Check, CheckCircle2, ChevronDown, MapPin } from 'lucide-react';
 import banner from '../../../assets/banner (1).png';
 
+const CATEGORIES = [
+  'Pet Sitting',
+  'Dog Walking',
+  'Pet Boarding',
+  'Pet Day Care',
+  'Holiday Home Sitting',
+  'Security Checks',
+  'Drop-In Visits',
+  'Pet Taxi'
+];
+
 const Hero = () => {
   const navigate = useNavigate();
   const [location, setLocation] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('All Categories');
+  
+  const [catOpenMobile, setCatOpenMobile] = useState(false);
+  const [catOpenDesktop, setCatOpenDesktop] = useState(false);
+  const [catSearch, setCatSearch] = useState('');
+  const catRefMobile = useRef<HTMLDivElement>(null);
+  const catRefDesktop = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (catRefMobile.current && !catRefMobile.current.contains(e.target as Node)) {
+        setCatOpenMobile(false);
+      }
+      if (catRefDesktop.current && !catRefDesktop.current.contains(e.target as Node)) {
+        setCatOpenDesktop(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const filtered = CATEGORIES.filter((c) =>
+    c.toLowerCase().includes(catSearch.toLowerCase())
+  );
+
+  const selectCategory = (cat: string) => {
+    setCategory(cat);
+    setCatOpenMobile(false);
+    setCatOpenDesktop(false);
+    setCatSearch('');
+  };
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (location.trim()) params.append('location', location.trim());
-    if (category) params.append('category', category);
+    if (category && category !== 'All Categories') params.append('category', category);
     navigate(`/listings?${params.toString()}`);
   };
 
   return (
-    <section className="relative h-auto md:h-[800px] min-h-[100vh] md:min-h-[800px] flex items-start pt-24 md:pt-30 pb-8 md:pb-0 overflow-hidden font-sans">
+    <section className="relative h-auto md:h-[800px] min-h-[100vh] md:min-h-[800px] flex items-start pt-24 md:pt-30 pb-8 md:pb-0 font-sans">
       {/* Background Image with Dark Overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -66,23 +107,56 @@ const Hero = () => {
               <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 ml-2" />
             </div>
             {/* Category */}
-            <div className="bg-white rounded px-4 py-3 w-full flex items-center justify-between relative">
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-transparent border-none outline-none text-slate-700 text-[15px] font-medium appearance-none cursor-pointer pr-8 focus:ring-0 focus:outline-none"
+            <div className="bg-white rounded w-full relative" ref={catRefMobile}>
+              <button
+                onClick={() => setCatOpenMobile(!catOpenMobile)}
+                className="w-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors"
               >
-                <option value="">Services: Pet Sitting, House...</option>
-                <option value="Pet Sitting">Pet Sitting</option>
-                <option value="Dog Walking">Dog Walking</option>
-                <option value="Pet Boarding">Pet Boarding</option>
-                <option value="Pet Day Care">Pet Day Care</option>
-                <option value="Holiday Home Sitting">Holiday Home Sitting</option>
-                <option value="Security Checks">Security Checks</option>
-                <option value="Drop-In Visits">Drop-In Visits</option>
-                <option value="Pet Taxi">Pet Taxi</option>
-              </select>
-              <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 pointer-events-none" />
+                <span className={category !== 'All Categories' ? 'text-slate-700 font-medium' : ''}>
+                  {category}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpenMobile ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {catOpenMobile && (
+                <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
+                  <div className="p-2 border-b border-gray-100">
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="Search"
+                      value={catSearch}
+                      onChange={(e) => setCatSearch(e.target.value)}
+                      className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
+                    />
+                  </div>
+                  <div className="py-1 max-h-60 overflow-y-auto">
+                    <button
+                      onClick={() => selectCategory('All Categories')}
+                      className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                        ${category === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                    >
+                      All Categories
+                    </button>
+                    {filtered.length > 0 ? (
+                      filtered.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => selectCategory(cat)}
+                          className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                            ${category === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                        >
+                          {cat}
+                        </button>
+                      ))
+                    ) : (
+                      <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
             {/* Search Button */}
             <button
@@ -106,23 +180,56 @@ const Hero = () => {
                 />
                 <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
               </div>
-              <div className="flex-[1.8] px-4 py-3 flex items-center justify-between gap-2 text-slate-500 relative">
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full bg-transparent border-none outline-none text-slate-700 text-[15px] font-medium appearance-none cursor-pointer pr-8 focus:ring-0 focus:outline-none"
+              <div className="flex-[1.8] flex items-center justify-between gap-2 text-slate-500 relative" ref={catRefDesktop}>
+                <button
+                  onClick={() => setCatOpenDesktop(!catOpenDesktop)}
+                  className="w-full h-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors"
                 >
-                  <option value="">Services: Pet Sitting, House Sitting...</option>
-                  <option value="Pet Sitting">Pet Sitting</option>
-                  <option value="Dog Walking">Dog Walking</option>
-                  <option value="Pet Boarding">Pet Boarding</option>
-                  <option value="Pet Day Care">Pet Day Care</option>
-                  <option value="Holiday Home Sitting">Holiday Home Sitting</option>
-                  <option value="Security Checks">Security Checks</option>
-                  <option value="Drop-In Visits">Drop-In Visits</option>
-                  <option value="Pet Taxi">Pet Taxi</option>
-                </select>
-                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 pointer-events-none" />
+                  <span className={category !== 'All Categories' ? 'text-slate-700 font-medium' : ''}>
+                    {category}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpenDesktop ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {catOpenDesktop && (
+                  <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
+                    <div className="p-2 border-b border-gray-100">
+                      <input
+                        autoFocus
+                        type="text"
+                        placeholder="Search"
+                        value={catSearch}
+                        onChange={(e) => setCatSearch(e.target.value)}
+                        className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
+                      />
+                    </div>
+                    <div className="py-1 max-h-60 overflow-y-auto">
+                      <button
+                        onClick={() => selectCategory('All Categories')}
+                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                          ${category === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                      >
+                        All Categories
+                      </button>
+                      {filtered.length > 0 ? (
+                        filtered.map((cat) => (
+                          <button
+                            key={cat}
+                            onClick={() => selectCategory(cat)}
+                            className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                              ${category === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                          >
+                            {cat}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <button

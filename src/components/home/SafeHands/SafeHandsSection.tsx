@@ -40,7 +40,7 @@ const SafeHandsSection = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-[2.75rem] font-fraunces font-semibold text-[#1a2e35] mb-4 leading-[1.15]"
+              className="text-[40px] font-fraunces font-semibold text-[#1a2e35] mb-4 leading-[1.15]"
             >
               Trusted Care Starts Here
             </motion.h2>
@@ -49,7 +49,7 @@ const SafeHandsSection = () => {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-[20px] md:text-[22px] font-medium text-[#1a2e35]/90 mb-6"
+              className="text-[20px] md:text-[20px] font-medium text-[#1a2e35]/90 mb-6"
               style={{ fontFamily: '"Inter", sans-serif' }}
             >
               Your Pets <span style={{ fontFamily: 'serif', fontWeight: 600 }}>&</span> Home in Safe Hands

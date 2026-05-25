@@ -294,36 +294,36 @@ export default function TrustAndSittersSection() {
               }}
               className="text-4xl md:text-4xl lg:text-[40px]"
             >
-              Find a pet sitter you can trust
+              Find a pet or home sitter you can trust
             </h2>
 
             <p
               style={{
-                fontSize: 15,
+                fontSize: 20,
                 color: "#666",
                 lineHeight: 1.6,
                 marginBottom: 40,
                 fontWeight: 500,
               }}
             >
-              We have over 100,000 experienced sitters who’ll give your pets all the love they need.
+              We have a growing community of trusted sitters who<br /> you can rely on for safe and loving care.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
               {[
                 {
                   title: "Verified & Vetted",
-                  desc: "Third-party verification, including ID and background checks.",
+                  desc: "Third-party verification, including ID, address and police clearance checks for your peace of mind.",
                   icon: <img src={verifiedImg} alt="Verified" className="w-12 h-12 object-contain" />
                 },
                 {
                   title: "Home & Pet Care",
-                  desc: "Honest reviews from pet parents like you",
+                  desc: "Honest reviews from pet and home owners.",
                   icon: <img src={petsittingImg} alt="Home & Pet Care" className="w-12 h-12 object-contain" />
                 },
                 {
                   title: "Trusted Reviews",
-                  desc: "Access to our 24/7 support team and our Vet Advice Line",
+                  desc: "Access to our support team to help you with your registration process.",
                   icon: <img src={securitypetImg} alt="Trusted Reviews" className="w-12 h-12 object-contain" />
                 }
               ].map((item, i) => (
@@ -332,10 +332,10 @@ export default function TrustAndSittersSection() {
                     {item.icon}
                   </div>
                   <div>
-                    {/* <h4 style={{ fontSize: 17, fontWeight: 800, color: "#1a2e35", margin: "0 0 4px" }}>
+                    {/* <h4 style={{ fontSize: 20, fontWeight: 800, color: "#1a2e35", margin: "0 0 4px" }}>
                       {item.title}
                     </h4> */}
-                    <p style={{ fontSize: 14, color: "#777", fontWeight: 500, margin: 0 }}>
+                    <p style={{ fontSize: 18, color: "#777", fontWeight: 500, margin: 0 }}>
                       {item.desc}
                     </p>
                   </div>

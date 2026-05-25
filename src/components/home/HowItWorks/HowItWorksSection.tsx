@@ -39,7 +39,7 @@ const HowItWorksSection = () => {
     <section className="bg-[#eee9df] pt-[80px] pb-[80px] font-sans">
       <div className="max-w-[1200px] mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1a2e35] mb-4 font-fraunces">
+          <h2 className="text-[40px] font-bold text-[#1a2e35] mb-4 font-fraunces">
             How Home Paw work
           </h2>
         </div>
@@ -72,10 +72,10 @@ const HowItWorksSection = () => {
 
               {/* Title and Description at the Top */}
               <div className="relative z-10">
-                <h3 className="text-base font-extrabold text-[#1a2e35] mb-2 leading-tight">
+                <h3 className="text-[20px] font-extrabold text-[#1a2e35] mb-2 leading-tight">
                   {step.title}
                 </h3>
-                <p className="text-[#1a2e35]/80 text-[13px] font-medium leading-relaxed max-w-[200px] mx-auto">
+                <p className="text-[#1a2e35]/80 text-[16px] md:text-[17px] font-medium leading-relaxed max-w-[240px] mx-auto">
                   {step.description}
                 </p>
               </div>

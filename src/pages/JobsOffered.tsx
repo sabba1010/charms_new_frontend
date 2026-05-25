@@ -39,8 +39,23 @@ interface Job {
 const JobsOffered = () => {
   const [locInput, setLocInput] = useState('');
   const [selectedCat, setSelectedCat] = useState('All Categories');
-  const [catOpen, setCatOpen] = useState(false);
-  const catRef = useRef<HTMLDivElement>(null);
+  
+  const [catOpenMobile, setCatOpenMobile] = useState(false);
+  const [catOpenDesktop, setCatOpenDesktop] = useState(false);
+  const [catSearch, setCatSearch] = useState('');
+  const catRefMobile = useRef<HTMLDivElement>(null);
+  const catRefDesktop = useRef<HTMLDivElement>(null);
+
+  const filteredCategories = CATEGORIES.filter((c) =>
+    c.toLowerCase().includes(catSearch.toLowerCase())
+  );
+
+  const selectCategory = (cat: string) => {
+    setSelectedCat(cat);
+    setCatOpenMobile(false);
+    setCatOpenDesktop(false);
+    setCatSearch('');
+  };
 
   const { isLoggedIn } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -68,8 +83,11 @@ const JobsOffered = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (catRef.current && !catRef.current.contains(e.target as Node)) {
-        setCatOpen(false);
+      if (catRefMobile.current && !catRefMobile.current.contains(e.target as Node)) {
+        setCatOpenMobile(false);
+      }
+      if (catRefDesktop.current && !catRefDesktop.current.contains(e.target as Node)) {
+        setCatOpenDesktop(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -102,7 +120,7 @@ const JobsOffered = () => {
   return (
     <div className="min-h-screen bg-[#FDFDFD] pb-20 font-sans">
       {/* Banner Section */}
-      <section className="relative h-[70vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden mb-12">
+      <section className="relative h-auto md:h-[800px] min-h-[100vh] md:min-h-[800px] w-full flex flex-col items-center justify-center font-sans pt-24 pb-12 md:pt-30 md:pb-0">
         <div className="absolute inset-0 z-0">
           <img
             src={bannerImg}
@@ -111,11 +129,12 @@ const JobsOffered = () => {
           />
           <div className="absolute inset-0 bg-black/45" />
         </div>
-        <div className="relative z-10 text-center px-6 max-w-4xl pt-16">
+        <div className="relative z-10 text-center px-6 w-full max-w-6xl pt-4 md:pt-16 flex flex-col items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full max-w-4xl"
           >
             <span className="text-white text-sm md:text-base font-semibold mb-3 block tracking-tight uppercase">
               Jobs Offered
@@ -127,70 +146,156 @@ const JobsOffered = () => {
               Find and apply to pet, house, and security service jobs from our trusted owners.
             </p>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full max-w-4xl mt-10 md:mt-12 text-left"
+          >
+            {/* ── MOBILE: Styled card layout ── */}
+            <div className="flex flex-col md:hidden gap-2 bg-[#122E29] p-3 rounded-xl shadow-2xl relative z-[50]">
+              {/* Location */}
+              <div className="bg-white rounded px-4 py-3 w-full flex items-center justify-between">
+                <input
+                  type="text"
+                  placeholder="Location"
+                  value={locInput}
+                  onChange={(e) => setLocInput(e.target.value)}
+                  className="w-full bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-500 text-[15px] font-medium"
+                />
+                <MapPin className="w-4 h-4 text-slate-400 shrink-0 ml-2" />
+              </div>
+              {/* Category */}
+              <div className="bg-white rounded w-full relative" ref={catRefMobile}>
+                <button
+                  onClick={() => setCatOpenMobile(!catOpenMobile)}
+                  className="w-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors"
+                >
+                  <span className={selectedCat !== 'All Categories' ? 'text-slate-700 font-medium' : ''}>
+                    {selectedCat}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpenMobile ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {catOpenMobile && (
+                  <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
+                    <div className="p-2 border-b border-gray-100">
+                      <input
+                        autoFocus
+                        type="text"
+                        placeholder="Search"
+                        value={catSearch}
+                        onChange={(e) => setCatSearch(e.target.value)}
+                        className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
+                      />
+                    </div>
+                    <div className="py-1 max-h-60 overflow-y-auto">
+                      <button
+                        onClick={() => selectCategory('All Categories')}
+                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                          ${selectedCat === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                      >
+                        All Categories
+                      </button>
+                      {filteredCategories.length > 0 ? (
+                        filteredCategories.map((cat) => (
+                          <button
+                            key={cat}
+                            onClick={() => selectCategory(cat)}
+                            className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                              ${selectedCat === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                          >
+                            {cat}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── DESKTOP: Styled like photo ── */}
+            <div className="hidden md:flex bg-[#122E29] p-3 rounded-lg shadow-2xl items-stretch gap-3 relative z-[50]">
+              <div className="flex-[2.5] bg-white rounded flex items-center">
+                <div className="flex-[1.2] px-4 py-3 border-r border-gray-200 flex items-center gap-3 text-slate-500">
+                  <input
+                    type="text"
+                    placeholder="Location"
+                    value={locInput}
+                    onChange={(e) => setLocInput(e.target.value)}
+                    className="w-full bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-500 text-[15px] font-medium"
+                  />
+                  <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
+                </div>
+                <div className="flex-[1.8] flex items-center justify-between gap-2 text-slate-500 relative" ref={catRefDesktop}>
+                  <button
+                    onClick={() => setCatOpenDesktop(!catOpenDesktop)}
+                    className="w-full h-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors"
+                  >
+                    <span className={selectedCat !== 'All Categories' ? 'text-slate-700 font-medium' : ''}>
+                      {selectedCat}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpenDesktop ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+
+                  {catOpenDesktop && (
+                    <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
+                      <div className="p-2 border-b border-gray-100">
+                        <input
+                          autoFocus
+                          type="text"
+                          placeholder="Search"
+                          value={catSearch}
+                          onChange={(e) => setCatSearch(e.target.value)}
+                          className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
+                        />
+                      </div>
+                      <div className="py-1 max-h-60 overflow-y-auto">
+                        <button
+                          onClick={() => selectCategory('All Categories')}
+                          className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                            ${selectedCat === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                        >
+                          All Categories
+                        </button>
+                        {filteredCategories.length > 0 ? (
+                          filteredCategories.map((cat) => (
+                            <button
+                              key={cat}
+                              onClick={() => selectCategory(cat)}
+                              className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                                ${selectedCat === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                            >
+                              {cat}
+                            </button>
+                          ))
+                        ) : (
+                          <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button
+                className="bg-[#8A9138] hover:bg-[#78802d] text-white px-8 py-3 rounded font-bold transition-all text-[15px] shadow-sm active:scale-95 shrink-0"
+              >
+                Search
+              </button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      <div className="max-w-[1400px] mx-auto px-6">
-        {/* Search & Filter Bar */}
-        <div className="bg-white border border-slate-100 rounded-full shadow-2xl flex flex-col md:flex-row items-center overflow-visible mb-12 -mt-24 relative z-20 max-w-4xl mx-auto">
-          {/* Location */}
-          <div className="flex-1 flex items-center px-5 border-b md:border-b-0 md:border-r border-gray-200 min-w-0 w-full h-16">
-            <input
-              type="text"
-              placeholder="Location"
-              value={locInput}
-              onChange={(e) => setLocInput(e.target.value)}
-              className="w-full h-full outline-none text-gray-700 placeholder:text-gray-400 text-sm bg-transparent"
-            />
-            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" />
-          </div>
-
-          {/* All Categories — with dropdown */}
-          <div className="relative flex-1 min-w-0 w-full h-16" ref={catRef}>
-            <button
-              onClick={() => setCatOpen(!catOpen)}
-              className="w-full h-full flex items-center justify-between px-5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <span className={selectedCat !== 'All Categories' ? 'text-gray-800 font-medium' : ''}>
-                {selectedCat}
-              </span>
-              <ChevronDown
-                className={`w-4 h-4 text-gray-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpen ? 'rotate-180' : ''}`}
-              />
-            </button>
-
-            {/* Dropdown panel */}
-            {catOpen && (
-              <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
-                <button
-                  onClick={() => { setSelectedCat('All Categories'); setCatOpen(false); }}
-                  className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
-                    ${selectedCat === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
-                >
-                  All Categories
-                </button>
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => { setSelectedCat(cat); setCatOpen(false); }}
-                    className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
-                      ${selectedCat === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Search button */}
-          <button
-            className="bg-[#111d21] text-white px-10 h-16 rounded-b-3xl md:rounded-l-none md:rounded-r-full font-bold hover:bg-[#1a2e35] transition-all flex-shrink-0 text-sm active:scale-95 w-full md:w-auto"
-          >
-            Search
-          </button>
-        </div>
-
+      <div className="max-w-[1400px] mx-auto px-6 mt-12">
         {/* Jobs Grid */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 text-slate-400">

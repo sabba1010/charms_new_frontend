@@ -169,7 +169,7 @@ export default function Testimonials() {
             <h2
               style={{
                 fontFamily: "'Fraunces', serif",
-                fontSize: "clamp(30px, 4vw, 46px)",
+                fontSize: "40px",
                 fontWeight: 600,
                 color: "#111",
                 letterSpacing: "-0.5px",
@@ -190,8 +190,8 @@ export default function Testimonials() {
             />
             <p
               style={{
-                fontSize: 16,
-                color: "#94a3b8",
+                fontSize: 20,
+                color: "#666666",
                 maxWidth: 560,
                 margin: "0 auto",
                 lineHeight: 1.75,
@@ -199,7 +199,7 @@ export default function Testimonials() {
               }}
             >
               We collect reviews from our users so you can get an honest opinion of what
-              an experience with our website are really like!
+              they experience to be a part of our community.
             </p>
           </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { MapPin, ChevronDown, Search } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'react-leaflet';
+import { MapPin, ChevronDown } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -246,6 +246,14 @@ const FullListbanner = () => {
           zoomControl={false}
           ref={setMap} // Attach map instance to state
         >
+          <ZoomControl position="topleft" />
+          <style>
+            {`
+              .leaflet-top.leaflet-left {
+                top: 80px; /* Push down to avoid overlapping the top-left button */
+              }
+            `}
+          </style>
           <ChangeMapCenter center={mapCenter} />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -288,79 +296,29 @@ const FullListbanner = () => {
             <span className="text-base">→</span>
           </button>
         </div>
-
-        {/* ── Custom zoom controls ───────────────────────────────────────── */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col">
-          <button
-            onClick={() => map?.zoomIn()}
-            className="bg-white w-8 h-8 flex items-center justify-center rounded-t-md border border-gray-300 shadow-sm font-bold text-gray-600 hover:bg-gray-50 text-lg leading-none transition-colors"
-          >
-            +
-          </button>
-          <button
-            onClick={() => map?.zoomOut()}
-            className="bg-white w-8 h-8 flex items-center justify-center rounded-b-md border border-t-0 border-gray-300 shadow-sm font-bold text-gray-600 hover:bg-gray-50 text-lg leading-none transition-colors"
-          >
-            −
-          </button>
-        </div>
       </div>
 
       {/* ── Search bar ─────────────────────────────────────────── */}
-      <div className="w-full px-4 md:px-6 py-4 md:py-0 md:-mt-10 relative z-40">
-        <div className="max-w-5xl mx-auto bg-white rounded-2xl md:rounded-full shadow-2xl border border-gray-100 flex flex-col md:flex-row items-stretch md:items-center overflow-visible">
-
-          <div className="flex-1 flex flex-col relative px-4 md:px-5 border-b md:border-b-0 md:border-r border-gray-100 min-w-0" ref={keywordRef}>
-            <div className="flex items-center w-full">
-              <input
-                type="text"
-                placeholder="Type..."
-                value={keyword}
-                onChange={(e) => {
-                  setKeyword(e.target.value);
-                  setShowSuggestions(true);
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                className="w-full py-2.5 md:py-4 outline-none text-gray-700 placeholder:text-gray-400 text-[13px] md:text-sm font-medium bg-transparent"
-              />
-            </div>
-            {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 py-1 max-h-60 overflow-y-auto">
-                {suggestions.map((sug, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setKeyword(sug);
-                      setShowSuggestions(false);
-                    }}
-                    className="w-full text-left px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 border-b border-gray-50 last:border-b-0"
-                  >
-                    <span className="text-gray-400 text-xs">🔍</span>
-                    <span className="font-medium text-gray-800">{sug}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
+      <div className="w-full px-4 md:px-6 relative z-40">
+        <div className="bg-white border border-slate-100 rounded-full shadow-2xl flex flex-col md:flex-row items-center overflow-visible mb-8 -mt-24 max-w-4xl mx-auto">
           {/* Location */}
-          <div className="flex-1 flex items-center px-4 md:px-5 border-b md:border-b-0 md:border-r border-gray-100 min-w-0">
+          <div className="flex-1 flex items-center px-5 border-b md:border-b-0 md:border-r border-gray-200 min-w-0 w-full h-16">
             <input
               type="text"
               placeholder="Location"
               value={locInput}
               onChange={(e) => setLocInput(e.target.value)}
-              className="w-full py-2.5 md:py-4 outline-none text-gray-700 placeholder:text-gray-400 text-[13px] md:text-sm font-medium bg-transparent"
+              className="w-full h-full outline-none text-gray-700 placeholder:text-gray-400 text-sm bg-transparent"
             />
-            <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 ml-2" />
+            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" />
           </div>
 
           {/* All Categories — with dropdown */}
-          <div className="relative flex-1 min-w-0" ref={catRef}>
+          <div className="relative flex-1 min-w-0 w-full h-16" ref={catRef}>
             <button
               id="fl-category-btn"
               onClick={() => setCatOpen(!catOpen)}
-              className="w-full flex items-center justify-between px-4 md:px-5 py-2.5 md:py-4 text-[13px] md:text-sm text-gray-500 hover:text-gray-700 transition-colors font-medium md:font-normal"
+              className="w-full h-full flex items-center justify-between px-5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               <span className={selectedCat !== 'All Categories' ? 'text-gray-800 font-medium' : ''}>
                 {selectedCat}
@@ -372,8 +330,8 @@ const FullListbanner = () => {
 
             {/* Dropdown panel */}
             {catOpen && (
-              <div className="absolute bottom-full mb-2 left-0 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
-                {/* Search input */}
+              <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
+                {/* Search input for categories */}
                 <div className="p-2 border-b border-gray-100">
                   <input
                     autoFocus
@@ -384,31 +342,27 @@ const FullListbanner = () => {
                     className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
                   />
                 </div>
-
-                {/* Category list */}
                 <div className="py-1 max-h-60 overflow-y-auto">
-                  {/* All Categories option */}
                   <button
                     onClick={() => selectCategory('All Categories')}
-                    className={`block w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50
+                    className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
                       ${selectedCat === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
                   >
                     All Categories
                   </button>
-
                   {filtered.length > 0 ? (
                     filtered.map((cat) => (
                       <button
                         key={cat}
                         onClick={() => selectCategory(cat)}
-                        className={`block w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50
+                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
                           ${selectedCat === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
                       >
                         {cat}
                       </button>
                     ))
                   ) : (
-                    <p className="px-4 py-3 text-sm text-gray-400">No categories found</p>
+                    <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
                   )}
                 </div>
               </div>
@@ -416,14 +370,12 @@ const FullListbanner = () => {
           </div>
 
           {/* Search button */}
-          <div className="p-2 md:p-0 flex shrink-0">
-            <button
-              onClick={handleSearchSubmit}
-              className="w-full md:w-auto bg-[#111d21] text-white px-8 py-2.5 md:py-4 rounded-xl md:rounded-full font-bold hover:bg-[#1a2e35] transition-all flex-shrink-0 text-[13px] md:text-sm active:scale-95 flex items-center justify-center"
-            >
-              <span>Search</span>
-            </button>
-          </div>
+          <button
+            onClick={handleSearchSubmit}
+            className="bg-[#111d21] text-white px-10 h-16 rounded-b-3xl md:rounded-l-none md:rounded-r-full font-bold hover:bg-[#1a2e35] transition-all flex-shrink-0 text-sm active:scale-95 w-full md:w-auto"
+          >
+            Search
+          </button>
         </div>
       </div>
 
