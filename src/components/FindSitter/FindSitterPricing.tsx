@@ -28,10 +28,10 @@ const FindSitterPricing: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7 }}
-                        className="bg-white p-10 md:p-14 rounded-[40px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] transition-all text-center flex flex-col justify-start min-h-[350px] relative"
+                        className="bg-[#E9D3C5] p-10 md:p-14 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] transition-all text-center flex flex-col justify-start min-h-[350px] relative"
                     >
-                        <div>
-                            <div className="inline-block text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-8">
+                        <div className="h-[40px] flex items-center justify-center mb-8">
+                            <div className="inline-block text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">
                                 Flexible
                             </div>
                         </div>
@@ -40,9 +40,11 @@ const FindSitterPricing: React.FC = () => {
                             <span className="text-5xl md:text-7xl font-bold text-[#1a2e35] font-serif">R190</span>
                             <span className="text-slate-400 text-xl">/mo</span>
                         </div>
-                        <p className="mt-6 text-slate-500 font-medium text-lg italic border-b border-slate-100 pb-6 mb-6">
-                            Pay as you go, cancel anytime.
-                        </p>
+                        <div className="mt-6 border-b border-[#d4bead] pb-6 mb-6 flex flex-col justify-end h-[84px]">
+                            <p className="text-slate-500 font-medium text-lg italic">
+                                Pay as you go, cancel anytime.
+                            </p>
+                        </div>
                         <div className="flex flex-col items-center">
                             <ul className="space-y-4 text-left">
                                 <li className="flex items-start gap-3 text-slate-600"><Check className="w-5 h-5 text-[#8b8b4e] shrink-0 mt-0.5" /> <span>Unlimited access to home & pet care</span></li>
@@ -69,17 +71,21 @@ const FindSitterPricing: React.FC = () => {
                         <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#8b8b4e]/10 rounded-full blur-[80px]" />
                         
                         <div className="relative z-10">
-                            <div className="inline-block bg-[#8b8b4e] text-white text-[12px] font-black px-5 py-2 rounded-full mb-8 uppercase tracking-widest shadow-lg">
-                                Save 2 Months
+                            <div className="h-[40px] flex items-center justify-center mb-8">
+                                <div className="inline-block bg-[#8b8b4e] text-white text-[12px] font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-lg">
+                                    Save 2 Months
+                                </div>
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-6">Annual Membership</h3>
                             <div className="flex items-baseline justify-center gap-1">
                                 <span className="text-5xl md:text-7xl font-bold text-white font-serif">R1900</span>
                                 <span className="text-white/40 text-xl">/yr</span>
                             </div>
-                            <p className="mt-6 text-white/70 font-medium text-lg border-b border-white/10 pb-6 mb-6">
-                                The best way to build your <br className="hidden sm:block" /> sitting reputation.
-                            </p>
+                            <div className="mt-6 border-b border-white/10 pb-6 mb-6 flex flex-col justify-end h-[84px]">
+                                <p className="text-white/70 font-medium text-lg">
+                                    The best way to build your <br className="hidden sm:block" /> sitting reputation.
+                                </p>
+                            </div>
                             <div className="flex flex-col items-center">
                                 <ul className="space-y-4 text-left">
                                     <li className="flex items-start gap-3 text-white/90"><Check className="w-5 h-5 text-[#a3a362] shrink-0 mt-0.5" /> <span>Unlimited access to home & pet care</span></li>

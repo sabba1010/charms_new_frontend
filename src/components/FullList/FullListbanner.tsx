@@ -299,80 +299,81 @@ const FullListbanner = () => {
       </div>
 
       {/* ── Search bar ─────────────────────────────────────────── */}
-      <div className="w-full px-4 md:px-6 relative z-40">
-        <div className="bg-white border border-slate-100 rounded-full shadow-2xl flex flex-col md:flex-row items-center overflow-visible mb-8 -mt-24 max-w-4xl mx-auto">
-          {/* Location */}
-          <div className="flex-1 flex items-center px-5 border-b md:border-b-0 md:border-r border-gray-200 min-w-0 w-full h-16">
-            <input
-              type="text"
-              placeholder="Location"
-              value={locInput}
-              onChange={(e) => setLocInput(e.target.value)}
-              className="w-full h-full outline-none text-gray-700 placeholder:text-gray-400 text-sm bg-transparent"
-            />
-            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" />
-          </div>
-
-          {/* All Categories — with dropdown */}
-          <div className="relative flex-1 min-w-0 w-full h-16" ref={catRef}>
-            <button
-              id="fl-category-btn"
-              onClick={() => setCatOpen(!catOpen)}
-              className="w-full h-full flex items-center justify-between px-5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <span className={selectedCat !== 'All Categories' ? 'text-gray-800 font-medium' : ''}>
-                {selectedCat}
-              </span>
-              <ChevronDown
-                className={`w-4 h-4 text-gray-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpen ? 'rotate-180' : ''}`}
+      <div className="w-full px-4 md:px-6 relative z-[50]">
+        <div className="bg-[#122E29] p-3 rounded-lg shadow-2xl flex flex-col md:flex-row items-stretch gap-3 mb-8 -mt-24 max-w-4xl mx-auto">
+          <div className="flex-1 bg-white rounded flex flex-col md:flex-row items-stretch relative">
+            {/* Location */}
+            <div className="flex-1 px-4 py-3 border-b md:border-b-0 md:border-r border-gray-200 flex items-center justify-between min-w-0">
+              <input
+                type="text"
+                placeholder="Location"
+                value={locInput}
+                onChange={(e) => setLocInput(e.target.value)}
+                className="w-full bg-transparent border-none outline-none text-slate-700 placeholder:text-slate-500 text-[15px] font-medium"
               />
-            </button>
+              <MapPin className="w-4 h-4 text-slate-400 shrink-0 ml-2" />
+            </div>
 
-            {/* Dropdown panel */}
-            {catOpen && (
-              <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
-                {/* Search input for categories */}
-                <div className="p-2 border-b border-gray-100">
-                  <input
-                    autoFocus
-                    type="text"
-                    placeholder="Search"
-                    value={catSearch}
-                    onChange={(e) => setCatSearch(e.target.value)}
-                    className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
-                  />
+            {/* All Categories — with dropdown */}
+            <div className="flex-1 relative flex items-center" ref={catRef}>
+              <button
+                id="fl-category-btn"
+                onClick={() => setCatOpen(!catOpen)}
+                className="w-full h-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                <span className={selectedCat !== 'All Categories' ? 'text-slate-700 font-medium' : ''}>
+                  {selectedCat}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${catOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {/* Dropdown panel */}
+              {catOpen && (
+                <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2">
+                  {/* Search input for categories */}
+                  <div className="p-2 border-b border-gray-100">
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="Search"
+                      value={catSearch}
+                      onChange={(e) => setCatSearch(e.target.value)}
+                      className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-lg outline-none placeholder:text-gray-400 border border-gray-200 focus:border-gray-300 transition-colors"
+                    />
+                  </div>
+                  <div className="py-1 max-h-60 overflow-y-auto">
+                    <button
+                      onClick={() => selectCategory('All Categories')}
+                      className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                        ${selectedCat === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                    >
+                      All Categories
+                    </button>
+                    {filtered.length > 0 ? (
+                      filtered.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => selectCategory(cat)}
+                          className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
+                            ${selectedCat === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
+                        >
+                          {cat}
+                        </button>
+                      ))
+                    ) : (
+                      <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
+                    )}
+                  </div>
                 </div>
-                <div className="py-1 max-h-60 overflow-y-auto">
-                  <button
-                    onClick={() => selectCategory('All Categories')}
-                    className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
-                      ${selectedCat === 'All Categories' ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
-                  >
-                    All Categories
-                  </button>
-                  {filtered.length > 0 ? (
-                    filtered.map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => selectCategory(cat)}
-                        className={`block w-full text-left px-5 py-2.5 text-sm transition-colors hover:bg-gray-50
-                          ${selectedCat === cat ? 'text-gray-900 font-semibold' : 'text-gray-700'}`}
-                      >
-                        {cat}
-                      </button>
-                    ))
-                  ) : (
-                    <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
-                  )}
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-
-          {/* Search button */}
-          <button
+          
+          <button 
             onClick={handleSearchSubmit}
-            className="bg-[#111d21] text-white px-10 h-16 rounded-b-3xl md:rounded-l-none md:rounded-r-full font-bold hover:bg-[#1a2e35] transition-all flex-shrink-0 text-sm active:scale-95 w-full md:w-auto"
+            className="bg-[#A4A63B] hover:bg-[#8e9033] text-white px-8 py-3 rounded text-[15px] font-bold transition-all flex-[0.5] whitespace-nowrap"
           >
             Search
           </button>
