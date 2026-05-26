@@ -89,7 +89,7 @@ const HowItWorksSection = () => {
               </div>
 
               {/* Icon Container matching FindSitterSteps exactly */}
-              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-end pb-4 z-10">
+              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-center z-10">
                 {typeof step.icon === 'string' ? (
                   <img
                     src={step.icon}
@@ -100,7 +100,7 @@ const HowItWorksSection = () => {
                 ) : (
                   <div
                     style={{ width: step.customWidth, height: step.customHeight }}
-                    className="flex items-end justify-center drop-shadow-md group-hover:scale-110 transition-transform duration-500"
+                    className="flex items-center justify-center drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                   >
                     {step.icon}
                   </div>

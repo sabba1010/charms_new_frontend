@@ -88,7 +88,7 @@ const FindSitterSteps = () => {
               </div>
 
               {/* Icon Container */}
-              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-end pb-4 z-10">
+              <div className="absolute bottom-0 left-0 w-full h-[100px] flex justify-center items-center z-10">
                 <img
                   src={step.icon}
                   alt={step.title}
