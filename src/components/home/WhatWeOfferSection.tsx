@@ -2,14 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 // Import images from assets/logo
-import petSittingImg from '../../assets/logo/remov iocns/Pet_Sitting-removebg-preview.png';
-import dogWalkingImg from '../../assets/logo/remov iocns/Dog_Walking-removebg-preview.png';
-import dogBoardingImg from '../../assets/logo/remov iocns/Dog_Boarding-removebg-preview.png';
-import doggyDayCareImg from '../../assets/logo/remov iocns/Doggy_Day_Care-removebg-preview.png';
-import houseSittingImg from '../../assets/logo/remov iocns/House_Sitting-removebg-preview.png';
-import securityChecksImg from '../../assets/logo/remov iocns/Security_Checks-removebg-preview.png';
-import dropInVisitsImg from '../../assets/logo/remov iocns/5abb80491a7440c1b9f41ab47679c361.png';
-import petTaxiImg from '../../assets/logo/remov iocns/Pet_Taxi-removebg-preview.png';
+import petSittingImg from '../../assets/png2/3.png';
+import dogWalkingImg from '../../assets/png2/7.png';
+import dogBoardingImg from '../../assets/png2/6.png';
+import doggyDayCareImg from '../../assets/png2/5.png';
+import houseSittingImg from '../../assets/png2/4.png';
+import securityChecksImg from '../../assets/png2/9.png';
+import dropInVisitsImg from '../../assets/png2/10.png';
+import petTaxiImg from '../../assets/png2/2.png';
 import cardBg from '../../assets/cardbackground.png';
 
 const offers = [
