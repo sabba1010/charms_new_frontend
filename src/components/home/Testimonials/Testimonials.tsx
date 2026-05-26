@@ -66,7 +66,6 @@ export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(1);
   const { isLoggedIn } = useAuth();
 
-
   const n = testimonials.length;
   const prev = (currentIndex - 1 + n) % n;
   const next = (currentIndex + 1) % n;
@@ -151,6 +150,33 @@ export default function Testimonials() {
           from { opacity: 0; transform: translateY(12px); }
           to   { opacity: 1; transform: translateY(0);    }
         }
+
+        /* ── Mobile: single column, hide side cards ── */
+        @media (max-width: 767px) {
+          .testi-section-inner {
+            padding: 0 20px !important;
+          }
+          .testi-header {
+            margin-bottom: 36px !important;
+          }
+          .testi-header h2 {
+            font-size: 26px !important;
+          }
+          .testi-header p {
+            font-size: 15px !important;
+          }
+          .testi-grid {
+            grid-template-columns: 1fr !important;
+            min-height: unset !important;
+            gap: 0 !important;
+          }
+          .testi-side-col {
+            display: none !important;
+          }
+          .testi-nav-wrap {
+            margin-top: 32px !important;
+          }
+        }
       `}</style>
 
       <section
@@ -162,10 +188,10 @@ export default function Testimonials() {
           width: "100%",
         }}
       >
-        <div style={{ width: "100%", padding: "0 48px" }}>
+        <div className="testi-section-inner" style={{ width: "100%", padding: "0 48px" }}>
 
           {/* ── Header ── */}
-          <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <div className="testi-header" style={{ textAlign: "center", marginBottom: 72 }}>
             <h2
               style={{
                 fontFamily: "'Fraunces', serif",
@@ -203,8 +229,9 @@ export default function Testimonials() {
             </p>
           </div>
 
-          {/* ── 3-column layout ── */}
+          {/* ── 3-column layout (desktop) / single card (mobile) ── */}
           <div
+            className="testi-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1.2fr 1fr",
@@ -220,7 +247,11 @@ export default function Testimonials() {
               return (
                 <div
                   key={`${t.id}-${col}`}
-                  className={isCenter ? "testi-bubble-center" : "testi-card-side"}
+                  className={
+                    isCenter
+                      ? "testi-bubble-center"
+                      : "testi-card-side testi-side-col"
+                  }
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -297,7 +328,7 @@ export default function Testimonials() {
                     <img
                       src={t.image}
                       alt={t.author}
-                      className={`${isCenter ? "testi-avatar-center" : "testi-avatar-side"} ${!isLoggedIn ? 'testi-blur' : 'testi-no-blur'}`}
+                      className={`${isCenter ? "testi-avatar-center" : "testi-avatar-side"} ${!isLoggedIn ? "testi-blur" : "testi-no-blur"}`}
                     />
 
                     <span
@@ -329,6 +360,7 @@ export default function Testimonials() {
 
           {/* ── Navigation ── */}
           <div
+            className="testi-nav-wrap"
             style={{
               display: "flex",
               flexDirection: "column",

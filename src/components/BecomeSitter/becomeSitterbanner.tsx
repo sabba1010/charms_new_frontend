@@ -5,7 +5,7 @@ import banner from '../../assets/Banners 12.png';
 
 const BecomeSitterBanner = () => {
     return (
-        <section className="relative h-[80vh] min-h-[800px] w-full flex items-center justify-center overflow-hidden font-sans">
+        <section className="relative h-[60vh] md:h-[80vh] min-h-[500px] md:min-h-[800px] w-full flex items-center justify-center overflow-hidden font-sans">
             {/* Background Image Container */}
             <div className="absolute inset-0 z-0">
                 <img

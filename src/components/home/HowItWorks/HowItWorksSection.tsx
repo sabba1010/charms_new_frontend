@@ -47,12 +47,12 @@ const HowItWorksSection = () => {
     <section className="bg-[#eee9df] pt-[80px] pb-[80px] font-sans">
       <div className="max-w-[1200px] mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-[40px] font-bold text-[#1a2e35] mb-4 font-fraunces">
+          <h2 className="text-[26px] md:text-[40px] font-bold text-[#1a2e35] mb-4 font-fraunces">
             How Home Paw work
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 justify-items-center">
           {steps.map((step, index) => (
             <motion.div
               key={index}

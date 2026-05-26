@@ -10,7 +10,7 @@ const GetStartedCTA = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto bg-[#111c1e] rounded-[32px] overflow-hidden py-14 px-8 text-center"
+        className="max-w-7xl mx-auto bg-[#111c1e] rounded-[32px] overflow-hidden py-10 md:py-14 px-4 sm:px-8 text-center"
       >
         {/* Heading */}
         <h2 className="text-[32px] md:text-[48px] font-fraunces font-medium text-white mb-6 leading-tight max-w-4xl mx-auto">

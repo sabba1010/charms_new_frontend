@@ -18,7 +18,7 @@ const TrustedCareInfoSection = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-[40px] font-fraunces font-semibold text-[#1a2e35] mb-6 leading-[1.15]"
+              className="text-[26px] md:text-[40px] font-fraunces font-semibold text-[#1a2e35] mb-6 leading-[1.15]"
             >
               Trusted Care for Your Home <span style={{ fontFamily: 'serif', fontWeight: 600 }}>&</span> Pets
             </motion.h2>

@@ -4,7 +4,7 @@ import banner from '../../assets/Banners 2.png';
 
 const FindSitterBanner = () => {
     return (
-        <section className="relative h-[80vh] min-h-[800px] w-full flex items-center justify-center overflow-hidden font-sans">
+        <section className="relative h-[60vh] md:h-[80vh] min-h-[500px] md:min-h-[800px] w-full flex items-center justify-center overflow-hidden font-sans">
             {/* Background Image Container */}
             <div className="absolute inset-0 z-0">
                 <img
@@ -34,7 +34,7 @@ const FindSitterBanner = () => {
                     </h2>
 
                     {/* Sentence */}
-                    <p className="font-sans text-[16px] md:text-[20px] text-[#D1D1D1] font-medium max-w-none mx-auto leading-relaxed whitespace-nowrap">
+                    <p className="font-sans text-[14px] md:text-[20px] text-[#D1D1D1] font-medium max-w-xs md:max-w-none mx-auto leading-relaxed whitespace-normal">
                         Search South Africa's most trusted pet & home care community.
                     </p>
                 </motion.div>

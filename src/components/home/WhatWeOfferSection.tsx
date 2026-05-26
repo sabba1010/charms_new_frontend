@@ -77,13 +77,13 @@ const WhatWeOfferSection = () => {
       <div className="max-w-[1360px] mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-[40px] font-fraunces font-bold text-[#1a2e35] mb-4">
+          <h2 className="text-[26px] md:text-[40px] font-fraunces font-bold text-[#1a2e35] mb-4">
             Services we offer
           </h2>
-          <h3 className="text-[20px] font-medium text-[#1a2e35]/90 mb-6">
+          <h3 className="text-[16px] md:text-[20px] font-medium text-[#1a2e35]/90 mb-6">
             Trusted care for your home <span style={{ fontFamily: 'serif', fontWeight: 600 }}>&</span> pets
           </h3>
-          <p className="text-[20px] text-[#666] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-[16px] md:text-[20px] text-[#666] max-w-3xl mx-auto leading-relaxed">
             Whether you need daily pet care, a trusted house sitter, or peace of mind while you travel, Home Paw connects you with reliable, vetted sitters who care for your home and pets as if they were their own.
           </p>
         </div>

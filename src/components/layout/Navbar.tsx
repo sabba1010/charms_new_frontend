@@ -213,7 +213,7 @@ const Navbar = () => {
           ) : (
             <Link
               to="/login"
-              className="flex items-center gap-2 bg-[#131b25] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-95"
+              className="hidden lg:flex items-center gap-2 bg-[#131b25] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-95"
             >
               <span>Sign Up or Register</span>
             </Link>

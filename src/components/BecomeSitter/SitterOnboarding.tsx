@@ -47,15 +47,15 @@ const SitterOnboarding = () => {
     <section className="bg-[#eee9df] py-24 px-6 font-sans">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-[40px] font-fraunces font-bold text-[#1a2e35] mb-4">
+          <h2 className="text-[26px] md:text-[40px] font-fraunces font-bold text-[#1a2e35] mb-4">
             Four steps to your first booking
           </h2>
-          <h3 className="text-[20px] font-medium text-[#1a2e35]/90 mb-6">
+          <h3 className="text-[16px] md:text-[20px] font-medium text-[#1a2e35]/90 mb-6">
             How to join
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 justify-items-center">
           {steps.map((step, i) => (
             <motion.div
               key={i}

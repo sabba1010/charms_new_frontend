@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
-import { ShieldCheck, Home, Star } from "lucide-react";
 import verifiedImg from '../../assets/logo/Screenshot 2026-05-14 093706.png';
 import petsittingImg from '../../assets/logo/Screenshot 2026-05-14 094108.png';
 import securitypetImg from '../../assets/logo/WhatsApp_Image_2026-05-12_at_8.30.56_AM__2_-removebg-preview.png';
@@ -67,18 +66,30 @@ const IconStarWhite = () => (
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
-const IconStarBlack = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="#111" stroke="#111" strokeWidth="0.5">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);
 
 export default function TrustAndSittersSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { isLoggedIn } = useAuth();
 
-  const maxIndex = sitters.length - 2;
+  // Detect mobile breakpoint
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // On mobile: show 1 card at a time; on desktop: show 2
+  const cardsPerView = isMobile ? 1 : 2;
+  const maxIndex = sitters.length - cardsPerView;
+
+  // Reset index if it goes out of range when switching breakpoints
+  useEffect(() => {
+    setCurrentIndex((p) => Math.min(p, maxIndex));
+  }, [isMobile, maxIndex]);
 
   const goNext = () => setCurrentIndex((p) => (p >= maxIndex ? 0 : p + 1));
   const goPrev = () => setCurrentIndex((p) => (p <= 0 ? maxIndex : p - 1));
@@ -86,7 +97,16 @@ export default function TrustAndSittersSection() {
   useEffect(() => {
     const t = setInterval(goNext, 5000);
     return () => clearInterval(t);
-  }, [currentIndex]);
+  }, [currentIndex, maxIndex]);
+
+  // Mobile: shift by 100% per card; Desktop: shift by 50% per card
+  const trackTransform = isMobile
+    ? `translateX(-${currentIndex * 100}%)`
+    : `translateX(calc(-${currentIndex * 50}% - ${currentIndex * 8}px))`;
+
+  // Mobile: card fills 100% of container; Desktop: two cards side by side
+  const cardWidth = isMobile ? "100%" : "calc(50% - 8px)";
+  const trackGap = isMobile ? 0 : 16;
 
   return (
     <>
@@ -101,7 +121,6 @@ export default function TrustAndSittersSection() {
           border-radius: 10px;
           overflow: hidden;
           flex-shrink: 0;
-          width: calc(50% - 8px);
           aspect-ratio: 4 / 3.2;
           box-shadow: 0 6px 24px rgba(0,0,0,0.14);
         }
@@ -179,6 +198,22 @@ export default function TrustAndSittersSection() {
           align-items: center;
           gap: 14px;
         }
+
+        /* ── Mobile: always show nav arrows ── */
+        @media (max-width: 767px) {
+          .ts-nav {
+            opacity: 1 !important;
+            transform: translateY(-50%) scale(1) !important;
+            pointer-events: auto !important;
+            width: 32px;
+            height: 32px;
+          }
+          .ts-nav.left  { left:  6px; }
+          .ts-nav.right { right: 6px; }
+          .ts-card-body h3 {
+            font-size: 17px;
+          }
+        }
       `}</style>
 
       <section
@@ -186,52 +221,53 @@ export default function TrustAndSittersSection() {
         style={{
           width: "100%",
           background: "#F5F2EB",
-          padding: "56px 48px",
+          padding: "56px 24px",
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 72,
-          }}
-        >
+        <div className="w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-[72px]">
+
           {/* ── LEFT: card slider box ── */}
           <div
-            className="ts-slider-box"
+            className="ts-slider-box w-full lg:w-[58%]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             style={{
-              width: "58%",
               flexShrink: 0,
               background: "#edecea",
               borderRadius: 12,
               border: "1px solid rgba(0,0,0,0.07)",
-              padding: "24px 28px",
+              padding: isMobile ? "16px" : "24px 28px",
               position: "relative",
             }}
           >
-            {/* arrows — visible on hover */}
+            {/* arrows */}
             <button
               className="ts-nav left"
               onClick={goPrev}
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? "translateY(-50%) scale(1)" : "translateY(-50%) scale(0.85)",
-                pointerEvents: isHovered ? "auto" : "none",
-              }}
+              style={
+                isMobile
+                  ? {}
+                  : {
+                      opacity: isHovered ? 1 : 0,
+                      transform: isHovered ? "translateY(-50%) scale(1)" : "translateY(-50%) scale(0.85)",
+                      pointerEvents: isHovered ? "auto" : "none",
+                    }
+              }
             >
               <IconChevronLeft />
             </button>
             <button
               className="ts-nav right"
               onClick={goNext}
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? "translateY(-50%) scale(1)" : "translateY(-50%) scale(0.85)",
-                pointerEvents: isHovered ? "auto" : "none",
-              }}
+              style={
+                isMobile
+                  ? {}
+                  : {
+                      opacity: isHovered ? 1 : 0,
+                      transform: isHovered ? "translateY(-50%) scale(1)" : "translateY(-50%) scale(0.85)",
+                      pointerEvents: isHovered ? "auto" : "none",
+                    }
+              }
             >
               <IconChevronRight />
             </button>
@@ -241,18 +277,26 @@ export default function TrustAndSittersSection() {
               <div
                 style={{
                   display: "flex",
-                  gap: 16,
+                  gap: trackGap,
                   transition: "transform 0.55s cubic-bezier(0.22,0.8,0.36,1)",
-                  transform: `translateX(calc(-${currentIndex * 50}% - ${currentIndex * 8}px))`,
+                  transform: trackTransform,
                   willChange: "transform",
                 }}
               >
                 {sitters.map((sitter) => (
-                  <div key={sitter.id} className="ts-card">
-                    <img 
-                      src={sitter.image} 
-                      alt={sitter.name} 
-                      style={!isLoggedIn ? { filter: 'blur(8px) grayscale(100%)', transition: 'filter 0.5s ease' } : { transition: 'filter 0.5s ease' }}
+                  <div
+                    key={sitter.id}
+                    className="ts-card"
+                    style={{ width: cardWidth }}
+                  >
+                    <img
+                      src={sitter.image}
+                      alt={sitter.name}
+                      style={
+                        !isLoggedIn
+                          ? { filter: "blur(8px) grayscale(100%)", transition: "filter 0.5s ease" }
+                          : { transition: "filter 0.5s ease" }
+                      }
                     />
 
                     <div className="ts-overlay" />
@@ -279,10 +323,33 @@ export default function TrustAndSittersSection() {
                 ))}
               </div>
             </div>
+
+            {/* Mobile dot indicators */}
+            {isMobile && (
+              <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 12 }}>
+                {sitters.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentIndex(i)}
+                    style={{
+                      width: currentIndex === i ? 20 : 8,
+                      height: 8,
+                      borderRadius: 999,
+                      background: currentIndex === i ? "#8a9e6e" : "#c5c5b0",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      transition: "all 0.3s ease",
+                    }}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* ── RIGHT: features ── */}
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="flex-1 w-full min-w-0">
             <h2
               style={{
                 fontFamily: "'Fraunces', serif",
@@ -292,7 +359,7 @@ export default function TrustAndSittersSection() {
                 marginBottom: 20,
                 letterSpacing: "-0.5px",
               }}
-              className="text-4xl md:text-4xl lg:text-[40px]"
+              className="text-[26px] md:text-4xl lg:text-[40px]"
             >
               Find a pet or home sitter you can trust
             </h2>
@@ -306,7 +373,7 @@ export default function TrustAndSittersSection() {
                 fontWeight: 500,
               }}
             >
-              We have a growing community of trusted sitters who<br /> you can rely on for safe and loving care.
+              We have a growing community of trusted sitters who<span className="hidden sm:inline"><br /></span>{" "}you can rely on for safe and loving care.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
@@ -314,27 +381,22 @@ export default function TrustAndSittersSection() {
                 {
                   title: "Verified & Vetted",
                   desc: "Third-party verification, including ID, address and police clearance checks for your peace of mind.",
-                  icon: <img src={verifiedImg} alt="Verified" className="w-12 h-12 object-contain" />
+                  icon: <img src={verifiedImg} alt="Verified" className="w-12 h-12 object-contain" />,
                 },
                 {
                   title: "Home & Pet Care",
                   desc: "Honest reviews from pet and home owners.",
-                  icon: <img src={petsittingImg} alt="Home & Pet Care" className="w-12 h-12 object-contain" />
+                  icon: <img src={petsittingImg} alt="Home & Pet Care" className="w-12 h-12 object-contain" />,
                 },
                 {
                   title: "Trusted Reviews",
                   desc: "Access to our support team to help you with your registration process.",
-                  icon: <img src={securitypetImg} alt="Trusted Reviews" className="w-12 h-12 object-contain" />
-                }
+                  icon: <img src={securitypetImg} alt="Trusted Reviews" className="w-12 h-12 object-contain" />,
+                },
               ].map((item, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                  <div className="shrink-0">
-                    {item.icon}
-                  </div>
+                <div key={i} className="flex items-center gap-5">
+                  <div className="shrink-0">{item.icon}</div>
                   <div>
-                    {/* <h4 style={{ fontSize: 20, fontWeight: 800, color: "#1a2e35", margin: "0 0 4px" }}>
-                      {item.title}
-                    </h4> */}
                     <p style={{ fontSize: 18, color: "#777", fontWeight: 500, margin: 0 }}>
                       {item.desc}
                     </p>
