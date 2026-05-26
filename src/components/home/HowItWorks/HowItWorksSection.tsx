@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
-import searchIcon from '../../../assets/WhatsApp-Image-search.svg';
-import calendarIcon from '../../../assets/Screenshot_2026-05-23_171912-removebg-preview.png';
-import houseIcon from '../../../assets/Screenshot 2026-05-23 17233012.png';
-import StarIcon from '../../../assets/logo/WhatsApp_Image_2026-05-12_at_8.30.56_AM__2_-removebg-preview.png';
+import searchIcon from '../../../assets/png/Artboard2@2x.png';
+import calendarIcon from '../../../assets/png/Artboard2copy@2x.png';
+import houseIcon from '../../../assets/png/Artboard3@2x.png';
+import StarIcon from '../../../assets/png/Artboard4@2x.png';
 import cardBg from '../../../assets/cardbackground.png';
 
 const steps = [
@@ -14,7 +14,7 @@ const steps = [
     description: "Create a listing for sitters to apply or find vetted sitters in your area by searching.",
     icon: searchIcon,
     customWidth: "auto",
-    customHeight: "85px"
+    customHeight: "75px"
   },
   {
     number: "2",
@@ -30,7 +30,7 @@ const steps = [
     description: "Focus on what matters while your home and pets are in safe hands.",
     icon: houseIcon,
     customWidth: "auto",
-    customHeight: "60px"
+    customHeight: "75px"
   },
   {
     number: "4",
@@ -98,7 +98,7 @@ const HowItWorksSection = () => {
                     className="object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <div 
+                  <div
                     style={{ width: step.customWidth, height: step.customHeight }}
                     className="flex items-end justify-center drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                   >
