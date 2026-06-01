@@ -5,10 +5,11 @@ import {
   DollarSign, CheckCircle2, ChevronLeft,
   Dog, Info, Home, Bed, Bath, Wifi,
   Cigarette, Star, User, ChevronRight, ShieldCheck,
-  Loader2, Briefcase
+  Loader2, Briefcase, PawPrint
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import safetyBannerImg from '../assets/Gemini_Generated_Image_ulc5i9ulc5i9ulc5.png';
+import shieldIcon from '../assets/png/Screenshot 2026-06-01 104415.png';
 import PosterCard from '../components/jobs/PosterCard';
 import { useAuth } from '../hooks/useAuth';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
@@ -42,8 +43,36 @@ interface JobData {
     avatar?: string;
     isVerified?: boolean;
   };
+  applicants?: any[];
   createdAt: string;
 }
+
+const mockApplicants = [
+  {
+    firstName: "Emily",
+    lastName: "Johnson",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&fit=crop",
+    rating: 5.0,
+    reviews: 24,
+    completedJobs: 2
+  },
+  {
+    firstName: "Michael",
+    lastName: "Brown",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&fit=crop",
+    rating: 4.9,
+    reviews: 18,
+    completedJobs: 3
+  },
+  {
+    firstName: "Sarah",
+    lastName: "Williams",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&h=200&fit=crop",
+    rating: 5.0,
+    reviews: 31,
+    completedJobs: 5
+  }
+];
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -53,6 +82,7 @@ const JobDetails = () => {
   const [hasApplied, setHasApplied] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [mapCoords, setMapCoords] = useState<{ lat: number, lng: number } | null>(null);
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
   const { isLoggedIn } = useAuth();
 
   const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
@@ -81,8 +111,6 @@ const JobDetails = () => {
         const data = await res.json();
         if (data.success) {
           setJob(data.data);
-          // Check if applied locally (in case we want to show it immediately if they visit again, though we don't have user ID in frontend easily)
-          // As a workaround, we'll just let the backend reject with 400 if they already applied, or we can check localStorage
           const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
           if (appliedJobs.includes(id)) {
             setHasApplied(true);
@@ -141,19 +169,19 @@ const JobDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F9F5EF] pt-40 pb-20 flex items-center justify-center text-slate-400">
-        <Loader2 className="w-10 h-10 animate-spin mr-3 text-[#c28876]" />
-        <span className="font-medium text-lg">Loading job details...</span>
+      <div className="min-h-screen bg-[#F8F7F3] pt-40 pb-20 flex items-center justify-center text-slate-400">
+        <Loader2 className="w-10 h-10 animate-spin mr-3 text-[#5A7E49]" />
+        <span className="font-semibold text-lg text-slate-600">Loading job details...</span>
       </div>
     );
   }
 
   if (!job) {
     return (
-      <div className="min-h-screen bg-[#F9F5EF] pt-40 pb-20 flex flex-col items-center justify-center text-slate-400">
+      <div className="min-h-screen bg-[#F8F7F3] pt-40 pb-20 flex flex-col items-center justify-center text-slate-400">
         <h2 className="text-2xl font-bold text-slate-700 mb-4">Job Not Found</h2>
         <p className="mb-6">This job might have been removed or is no longer active.</p>
-        <Link to="/jobs-offered" className="px-6 py-3 bg-[#c28876] text-white rounded-xl font-bold">
+        <Link to="/jobs-offered" className="px-6 py-3 bg-[#5A7E49] text-white rounded-xl font-bold hover:bg-[#4C7A34] transition-all">
           Back to Jobs
         </Link>
       </div>
@@ -173,188 +201,244 @@ const JobDetails = () => {
     return diff > 0 ? diff : 1;
   };
 
+  const formatDate = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const getJobImages = (j: JobData) => {
+    const images = j.petImages && j.petImages.filter(Boolean).length > 0 ? j.petImages : [];
+    const defaults = [
+      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=800&auto=format&fit=crop", // Golden Retriever
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop", // House exterior
+      "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?q=80&w=800&auto=format&fit=crop", // House interior
+      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800&auto=format&fit=crop"  // Yard/garden
+    ];
+    const finalImages = [...images];
+    while (finalImages.length < 4) {
+      finalImages.push(defaults[finalImages.length % 4]);
+    }
+    return finalImages;
+  };
+
   const nights = calcNights(job.startDate, job.endDate);
+  const budgetNum = parseInt(job.budget.replace(/[^0-9]/g, '')) || 0;
+  const dailyRate = nights > 0 ? Math.round(budgetNum / nights) : budgetNum;
+  const budgetDisplay = job.budget.startsWith('$') ? job.budget : `$${job.budget}`;
+  const offerText = `${budgetDisplay} ($${dailyRate} per day)`;
+
+  const descriptionText = job.description || "We're looking for a caring and responsible sitter to look after our golden retriever, Buddy, while we're away on vacation. Buddy is friendly, well-behaved, and loves company. Our home is comfortable and in a quiet neighborhood.";
+  const isLongDesc = descriptionText.length > 180;
+  const displayDesc = isLongDesc && !isDescExpanded ? `${descriptionText.slice(0, 180)}...` : descriptionText;
+  const jobImages = getJobImages(job);
 
   return (
-    <div className="min-h-screen bg-[#F9F5EF] pt-28 pb-12 font-sans">
-      <div className="max-w-7xl mx-auto px-6">
-
+    <div className="min-h-screen bg-[#F8F7F3] pt-28 pb-16 font-sans">
+      <div className="max-w-[1400px] mx-auto px-6">
+        
         {/* Back Button */}
         <Link
           to="/jobs-offered"
-          className="inline-flex items-center gap-2 text-slate-500 hover:text-[#c28876] transition-colors mb-8 group"
+          className="inline-flex items-center gap-2 text-slate-500 hover:text-[#5A7E49] transition-colors mb-6 group font-bold text-sm"
         >
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 group-hover:border-[#c28876]/30 group-hover:bg-[#c28876]/5 transition-all">
-            <ChevronLeft size={18} />
-          </div>
-          <span className="text-sm font-bold tracking-tight">Back to Listings</span>
+          <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back to Listings</span>
         </Link>
 
-        {/* Main Header Card */}
-        <div className="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-100 mb-8 relative overflow-hidden">
-          {/* Subtle Rose Accent Gradient */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#c28876]/5 to-transparent pointer-events-none" />
-
-          <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-10">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <h1 className="text-3xl md:text-4xl font-bold text-[#1a2e35] font-serif leading-tight">
-                  {job.title}
-                </h1>
-                <span className="bg-[#E7F5E7] text-[#4CAF50] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                  {job.status}
-                </span>
-              </div>
-              <div className="flex items-center text-slate-400 text-sm gap-2 mb-2">
-                <MapPin size={16} className="text-[#c28876]/60" />
-                <span className="font-medium tracking-tight">{job.location}</span>
-              </div>
-              <div className="text-xs text-slate-400 font-bold uppercase tracking-widest">
-                Posted {getDaysAgo(job.createdAt)}
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="w-11 h-11 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm hover:border-[#c28876]/30 hover:bg-[#c28876]/5 transition-all text-slate-400 hover:text-[#c28876]">
-                <Heart size={20} />
-              </button>
-              <button className="flex items-center gap-2 bg-white border border-slate-100 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 shadow-sm hover:border-[#c28876]/30 hover:bg-[#c28876]/5 transition-all group">
-                <Share2 size={18} className="text-[#c28876]/70 group-hover:scale-110 transition-transform" />
-                <span>Share</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Quick Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center gap-4 bg-[#F9F6F1] p-6 rounded-2xl border border-slate-100/50">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm text-[#c28876]">
-                <Calendar size={22} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{job.startDate} - {job.endDate}</p>
-                <p className="text-sm font-extrabold text-[#1a2e35]">{nights} night(s)</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 bg-[#F9F6F1] p-6 rounded-2xl border border-slate-100/50">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm text-[#c28876]">
-                <Dog size={22} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Pet Type</p>
-                <p className="text-sm font-extrabold text-[#1a2e35]">{job.petType}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 bg-[#F9F6F1] p-6 rounded-2xl border border-slate-100/50">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm text-[#c28876]">
-                <DollarSign size={22} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Offer / Budget</p>
-                <p className="text-sm font-extrabold text-[#1a2e35]">{job.budget}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Layout Grid: Content + Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-          {/* Main Column */}
-          <div className="lg:col-span-2 space-y-8">
-
-            {/* Job Poster Card */}
-            <PosterCard
-              id={job.owner._id || ''}
-              name={`${job.owner.firstName} ${job.owner.lastName}`}
-              email={job.owner.email}
-              avatar={job.owner.avatar || "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=200&h=200&fit=crop"}
-            />
-
-            {/* Gallery Section */}
-            {job.petImages && job.petImages.length > 0 && (
-              <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100">
-                <h2 className="text-2xl font-bold text-[#1a2e35] font-serif mb-6">Photos</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[450px] overflow-hidden">
-                  <div className="rounded-[2rem] overflow-hidden shadow-lg border border-white h-full relative">
-                    <img src={job.petImages[0]} alt="Pet Primary" className="absolute inset-0 w-full h-full object-cover" />
+        {/* Outer 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-12">
+          
+          {/* Left Column (2/3) - Unified Card Container */}
+          <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-slate-100/90 flex flex-col gap-8">
+            
+            {/* Title Section */}
+            <div className="w-full">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                <div>
+                  <div className="flex flex-wrap items-center gap-3 mb-2">
+                    <h1 className="text-3xl font-extrabold text-[#1a2e35] leading-tight">
+                      {job.title}
+                    </h1>
+                    <span className="bg-[#E2F0D9] text-[#5A7E49] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      {job.status === 'Active' ? 'Open' : job.status}
+                    </span>
                   </div>
-                  {job.petImages.length > 1 && (
-                    <div className="grid grid-rows-2 gap-4 h-full">
-                      {job.petImages.length === 2 ? (
-                        <div className="rounded-3xl overflow-hidden shadow-md border border-white h-full row-span-2 relative">
-                          <img src={job.petImages[1]} alt="Pet 2" className="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                      ) : (
-                        <>
-                          <div className="grid grid-cols-2 gap-4 h-full">
-                            <div className="rounded-3xl overflow-hidden shadow-md border border-white relative h-full">
-                              <img src={job.petImages[1]} alt="Pet 2" className="absolute inset-0 w-full h-full object-cover" />
-                            </div>
-                            {job.petImages.length > 2 && (
-                              <div className="rounded-3xl overflow-hidden shadow-md border border-white relative h-full">
-                                <img src={job.petImages[2]} alt="Pet 3" className="absolute inset-0 w-full h-full object-cover" />
-                              </div>
-                            )}
-                          </div>
-                          {job.petImages.length > 3 && (
-                            <div className="rounded-3xl overflow-hidden shadow-md border border-white relative group cursor-pointer h-full">
-                              <img src={job.petImages[3]} alt="Pet 4" className="absolute inset-0 w-full h-full object-cover" />
-                              {job.petImages.length > 4 && (
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-all z-10">
-                                  <span className="text-white text-2xl font-bold font-serif">+{job.petImages.length - 4}</span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </>
-                      )}
+                  <div className="flex items-center text-slate-400 text-sm gap-1.5">
+                    <MapPin size={16} className="text-[#5A7E49]" />
+                    <span className="font-semibold">{job.location}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-sm hover:border-[#5A7E49]/30 hover:bg-[#5A7E49]/5 transition-all text-slate-400 hover:text-[#5A7E49]">
+                    <Heart size={18} />
+                  </button>
+                  <button className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold text-slate-600 shadow-sm hover:border-[#5A7E49]/30 hover:bg-[#5A7E49]/5 transition-all">
+                    <Share2 size={16} className="text-slate-400" />
+                    <span>Share</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Three Quick Info Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="flex items-center gap-4 bg-[#F8F7F3] p-5 rounded-2xl border border-slate-100">
+                  <div className="w-12 h-12 rounded-xl bg-[#EAF0E5] text-[#5A7E49] flex items-center justify-center shrink-0 font-bold">
+                    <Calendar size={22} />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-extrabold text-[#1a2e35] leading-tight">{formatDate(job.startDate)} – {formatDate(job.endDate)}</p>
+                    <p className="text-xs font-bold text-slate-400 mt-0.5">{nights} nights</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 bg-[#F8F7F3] p-5 rounded-2xl border border-slate-100">
+                  <div className="w-12 h-12 rounded-xl bg-[#EAF0E5] text-[#5A7E49] flex items-center justify-center shrink-0 font-bold">
+                    <Dog size={22} />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-extrabold text-[#1a2e35] leading-tight">{job.serviceType || 'Dog Sitting'}</p>
+                    <p className="text-xs font-bold text-slate-400 mt-0.5">1 {job.petType || 'Dog'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 bg-[#F8F7F3] p-5 rounded-2xl border border-slate-100">
+                  <div className="w-12 h-12 rounded-xl bg-[#EAF0E5] text-[#5A7E49] flex items-center justify-center shrink-0 font-bold">
+                    <DollarSign size={22} />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-extrabold text-[#1a2e35] leading-tight">{budgetDisplay}</p>
+                    <p className="text-xs font-bold text-slate-400 mt-0.5">Total Offer</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Collapsible Description text */}
+              <div className="mt-6 border-t border-slate-100 pt-6">
+                <p className="text-slate-600 leading-relaxed font-medium text-sm whitespace-pre-wrap">
+                  {displayDesc}
+                </p>
+                {isLongDesc && (
+                  <button
+                    onClick={() => setIsDescExpanded(!isDescExpanded)}
+                    className="text-[#5A7E49] hover:text-[#4C7A34] font-bold text-xs mt-2 flex items-center gap-1 hover:underline"
+                  >
+                    <span>{isDescExpanded ? 'Read less' : 'Read more'}</span>
+                    <span className="text-[10px]">{isDescExpanded ? '▲' : '▼'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Photos Gallery Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[420px]">
+              <div className="md:col-span-2 rounded-3xl overflow-hidden relative h-full border border-slate-100">
+                <img src={jobImages[0]} alt="Pet Primary" className="absolute inset-0 w-full h-full object-cover" />
+              </div>
+              <div className="grid grid-rows-3 gap-4 h-full">
+                <div className="rounded-2xl overflow-hidden relative h-full border border-slate-100">
+                  <img src={jobImages[1]} alt="Pet 2" className="absolute inset-0 w-full h-full object-cover" />
+                </div>
+                <div className="rounded-2xl overflow-hidden relative h-full border border-slate-100">
+                  <img src={jobImages[2]} alt="Pet 3" className="absolute inset-0 w-full h-full object-cover" />
+                </div>
+                <div className="rounded-2xl overflow-hidden relative h-full border border-slate-100">
+                  <img src={jobImages[3]} alt="Pet 4" className="absolute inset-0 w-full h-full object-cover" />
+                  {jobImages.length > 4 && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <span className="text-white text-lg font-bold">+{jobImages.length - 3}</span>
                     </div>
                   )}
                 </div>
               </div>
-            )}
-
-            {/* Description Section */}
-            <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100">
-              <h2 className="text-2xl font-bold text-[#1a2e35] font-serif mb-6">Job Description & Requirements</h2>
-              <p className="text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">
-                {job.description}
-              </p>
             </div>
 
             {/* Details Section */}
-            <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100">
-              <h2 className="text-2xl font-bold text-[#1a2e35] font-serif mb-8">Details</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+            <div className="border-t border-slate-100 pt-8">
+              <h3 className="text-xl font-bold text-[#1a2e35] mb-6">Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                 {[
-                  { label: "Service", value: job.serviceType || 'Not specified', icon: <Briefcase size={18} /> },
-                  { label: "Pet Type", value: job.petType, icon: <Dog size={18} /> },
-                  { label: "Start Date", value: job.startDate, icon: <Calendar size={18} /> },
+                  { label: "Service Type", value: job.serviceType || 'Dog Sitting', icon: <Briefcase size={18} /> },
+                  { label: "Pets", value: `1 ${job.petType || 'Dog'} (${job.petType === 'Cat' ? 'Cat' : 'Golden Retriever'})`, icon: <Dog size={18} /> },
+                  { label: "Pet's Age", value: "3 Years", icon: <Clock size={18} /> },
+                  { label: "Size", value: "Large (22 – 30 kg)", icon: <Info size={18} /> },
+                  { label: "Start Date", value: formatDate(job.startDate), icon: <Calendar size={18} /> },
+                  { label: "End Date", value: formatDate(job.endDate), icon: <Calendar size={18} /> },
+                  { label: "Total Offer", value: offerText, icon: <DollarSign size={18} /> },
                   { label: "Location", value: job.location, icon: <MapPin size={18} /> },
-                  { label: "End Date", value: job.endDate, icon: <Calendar size={18} /> },
-                  { label: "Total Offer", value: job.budget, icon: <DollarSign size={18} /> },
-                  { label: "Duration", value: `${nights} Night(s)`, icon: <Clock size={18} /> },
                 ].map((detail, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#F9F6F1] flex items-center justify-center text-[#c28876]/70 shrink-0">
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#EAF0E5] flex items-center justify-center text-[#5A7E49] shrink-0 font-bold">
                       {detail.icon}
                     </div>
                     <div>
-                      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">{detail.label}</p>
-                      <p className="text-[15px] font-extrabold text-[#1a2e35]">{detail.value}</p>
+                      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">{detail.label}</p>
+                      <p className="text-sm font-extrabold text-[#1a2e35]">{detail.value}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Care Instructions Section */}
+            <div className="border-t border-slate-100 pt-8">
+              <h3 className="text-xl font-bold text-[#1a2e35] mb-4">Care Instructions</h3>
+              <p className="text-slate-600 leading-relaxed font-semibold text-sm">
+                Buddy is friendly and loves people. He enjoys daily walks, playtime in the yard, and cuddles on the couch. Please feed him twice a day and make sure he gets plenty of attention. Water the plants and bring in the mail.
+              </p>
+            </div>
+
+            {/* Home Details Section */}
+            <div className="border-t border-slate-100 pt-8">
+              <h3 className="text-xl font-bold text-[#1a2e35] mb-6">Home Details</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+                <div className="flex items-center gap-3">
+                  <Home className="text-[#5A7E49] shrink-0" size={20} />
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Type</p>
+                    <p className="text-sm font-extrabold text-[#1a2e35]">House</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Bed className="text-[#5A7E49] shrink-0" size={20} />
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bedrooms</p>
+                    <p className="text-sm font-extrabold text-[#1a2e35]">3</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Bath className="text-[#5A7E49] shrink-0" size={20} />
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bathrooms</p>
+                    <p className="text-sm font-extrabold text-[#1a2e35]">2</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Wifi className="text-[#5A7E49] shrink-0" size={20} />
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Internet</p>
+                    <p className="text-sm font-extrabold text-[#1a2e35]">Yes</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Cigarette className="text-[#5A7E49] shrink-0" size={20} />
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Smoking</p>
+                    <p className="text-sm font-extrabold text-[#1a2e35]">No</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Map Section */}
             {mapCoords && (
-              <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100">
-                <h2 className="text-2xl font-bold text-[#1a2e35] font-serif mb-6 flex items-center gap-2">
-                  <MapPin className="text-[#c28876]" size={24} />
+              <div className="border-t border-slate-100 pt-8">
+                <h3 className="text-xl font-bold text-[#1a2e35] mb-6 flex items-center gap-2">
+                  <MapPin className="text-[#5A7E49]" size={22} />
                   Location Map
-                </h2>
+                </h3>
                 <div className="h-64 md:h-80 w-full rounded-2xl overflow-hidden border border-slate-200 z-0 relative">
                   <MapContainer
                     center={[mapCoords.lat, mapCoords.lng]}
@@ -371,20 +455,51 @@ const JobDetails = () => {
 
           </div>
 
-          {/* Sidebar */}
+          {/* Right Column (Sidebar 1/3) */}
           <div className="space-y-8">
+            
+            {/* About the Home Card */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100/80">
+              <h3 className="text-xl font-bold text-[#1a2e35] mb-6">About the Home</h3>
+              <div className="space-y-4">
+                {[
+                  "Fenced Yard",
+                  "Pet Friendly Home",
+                  "Non-Smoking Home",
+                  "Air Conditioning",
+                  "Wi-Fi Available"
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#E2F0D9] text-[#5A7E49] flex items-center justify-center shrink-0">
+                      <CheckCircle2 size={14} className="fill-[#5A7E49] text-white" />
+                    </div>
+                    <span className="text-sm font-semibold text-[#1a2e35]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Apply Card */}
-            <div className="bg-[#f0f9f0] rounded-3xl p-8 border border-[#e0f0e0] relative overflow-hidden">
-              <div className="relative z-10 text-center">
-                <div className="w-16 h-16 rounded-full bg-white/80 mx-auto flex items-center justify-center text-[#4CAF50] mb-6 shadow-sm">
-                  {hasApplied ? <CheckCircle2 size={32} className="text-emerald-500" /> : <Dog size={32} />}
+            <div className="bg-[#EBF1E6] rounded-3xl p-8 border border-[#DCE6D5] relative overflow-hidden shadow-sm">
+              <h3 className="text-[17px] font-extrabold text-[#1c2f35] mb-6 text-left tracking-tight">
+                Apply for this Listing
+              </h3>
+              <div className="relative z-10 text-center flex flex-col items-center">
+                <div className="w-20 h-20 rounded-full bg-[#D6E2CE] flex items-center justify-center text-[#5E784C] mb-4 shadow-sm">
+                  {hasApplied ? (
+                    <CheckCircle2 size={36} className="text-[#5E784C]" />
+                  ) : (
+                    <PawPrint size={36} className="fill-[#5E784C] text-[#5E784C]" />
+                  )}
                 </div>
-                <h3 className="text-xl font-bold text-[#1a2e35] mb-2">
+                <h4 className="text-[16px] font-bold text-[#1c2f35] mb-1.5">
                   {hasApplied ? 'Application Sent!' : 'Interested in helping out?'}
-                </h3>
-                <p className="text-slate-500 text-sm mb-8 font-medium">
-                  {hasApplied ? 'The owner has received your application.' : 'Send an application to the owner.'}
+                </h4>
+                <p className="text-slate-500 text-[13px] font-medium leading-relaxed mb-6 max-w-[260px]">
+                  {hasApplied 
+                    ? `Your application has been received by ${job.owner.firstName || 'the owner'}.` 
+                    : `Send an application to the owner.`
+                  }
                 </p>
                 {errorMsg && (
                   <p className="text-rose-500 text-xs font-bold mb-4">{errorMsg}</p>
@@ -392,34 +507,126 @@ const JobDetails = () => {
                 <button
                   onClick={handleApply}
                   disabled={hasApplied || applying}
-                  className={`w-full py-4 rounded-2xl font-bold transition-all shadow-xl transform hover:-translate-y-1 flex justify-center items-center gap-2
+                  className={`w-full py-3.5 rounded-2xl font-bold transition-all shadow-sm flex justify-center items-center gap-2 text-sm
                     ${hasApplied
-                      ? 'bg-emerald-100 text-emerald-600 shadow-emerald-100/20 hover:translate-y-0 cursor-not-allowed'
-                      : 'bg-[#c28876] text-white hover:brightness-110 shadow-[#c28876]/20'
+                      ? 'bg-[#DCE6D5] text-[#5E784C] cursor-not-allowed'
+                      : 'bg-[#758D5E] hover:bg-[#647C4E] text-white hover:shadow-md'
                     }`}
                 >
                   {applying ? (
-                    <><Loader2 size={18} className="animate-spin" /> Applying...</>
+                    <><Loader2 size={16} className="animate-spin" /> Applying...</>
                   ) : hasApplied ? (
-                    <><CheckCircle2 size={18} /> Applied</>
+                    <><CheckCircle2 size={16} /> Applied</>
                   ) : (
                     'Apply Now'
                   )}
                 </button>
               </div>
-              {/* Decorative Circle */}
-              <div className="absolute -bottom-12 -right-12 w-40 h-40 bg-white/20 rounded-full blur-2xl pointer-events-none" />
             </div>
 
-            {/* Trust and Safety Badge */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
-                <ShieldCheck size={32} />
+            {/* Applications List Card */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100/80">
+              <h3 className="text-xl font-bold text-[#1a2e35] mb-6">
+                Applications ({job.applicants?.length || 3})
+              </h3>
+              
+              <div className="space-y-6">
+                {job.applicants && job.applicants.length > 0 ? (
+                  job.applicants.slice(0, 3).map((app: any, idx: number) => (
+                    <div key={app._id || idx} className="flex items-center justify-between group">
+                      <div className="flex items-center gap-4">
+                        <img 
+                          src={app.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&fit=crop"} 
+                          alt={app.firstName} 
+                          className="w-12 h-12 rounded-full object-cover border border-slate-100"
+                        />
+                        <div>
+                          <h4 className="font-extrabold text-[#1a2e35] text-sm group-hover:text-[#5A7E49] transition-colors">
+                            {app.firstName} {app.lastName}
+                          </h4>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <Star size={12} className="text-yellow-400 fill-yellow-400" />
+                            <span className="text-xs font-bold text-[#1a2e35]">{app.rating?.toFixed(1) || "5.0"}</span>
+                            <span className="text-xs font-medium text-slate-400">({app.reviews || 24} reviews)</span>
+                          </div>
+                          <p className="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-wider">
+                            {app.completedJobs || 2} Completed Jobs
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight size={18} className="text-slate-300 group-hover:text-[#5A7E49] transition-colors cursor-pointer" />
+                    </div>
+                  ))
+                ) : (
+                  mockApplicants.map((app, idx) => (
+                    <div key={idx} className="flex items-center justify-between group">
+                      <div className="flex items-center gap-4">
+                        <img 
+                          src={app.avatar} 
+                          alt={app.firstName} 
+                          className="w-12 h-12 rounded-full object-cover border border-slate-100"
+                        />
+                        <div>
+                          <h4 className="font-extrabold text-[#1a2e35] text-sm group-hover:text-[#5A7E49] transition-colors">
+                            {app.firstName} {app.lastName}
+                          </h4>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <Star size={12} className="text-yellow-400 fill-yellow-400" />
+                            <span className="text-xs font-bold text-[#1a2e35]">{app.rating.toFixed(1)}</span>
+                            <span className="text-xs font-medium text-slate-400">({app.reviews} reviews)</span>
+                          </div>
+                          <p className="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-wider">
+                            {app.completedJobs} Completed Jobs
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight size={18} className="text-slate-300 group-hover:text-[#5A7E49] transition-colors cursor-pointer" />
+                    </div>
+                  ))
+                )}
               </div>
-              <h4 className="font-bold text-slate-800 mb-2">Secure Platform</h4>
-              <p className="text-xs text-slate-500">All payments and communications should go through our secure platform for your safety.</p>
+              
+              <Link 
+                to="/jobs-offered" 
+                className="w-full mt-8 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all text-center block"
+              >
+                View All Applications
+              </Link>
             </div>
 
+          </div>
+
+        </div>
+
+        {/* Safety Banner */}
+        <div className="w-full relative rounded-3xl overflow-hidden border border-[#DCE6D5] flex items-center p-8 bg-[#EAEFE4] mt-16 min-h-[140px] md:h-44 shadow-sm">
+          {/* Dog and Cat Image aligned to the right */}
+          <div className="absolute right-0 top-0 bottom-0 w-full md:w-1/2 select-none pointer-events-none z-0">
+            <img 
+              src={safetyBannerImg} 
+              className="w-full h-full object-cover object-[right_15%]" 
+              alt="Sleeping dog and cat" 
+            />
+            {/* Fade overlay from solid color to transparent only on the left edge */}
+            <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#EAEFE4] to-transparent pointer-events-none" />
+          </div>
+
+          {/* Content Block */}
+          <div className="relative z-10 flex items-center gap-8 max-w-2xl">
+            {/* Custom Shield Image */}
+            <img src={shieldIcon} className="w-[120px] h-[120px] shrink-0 object-contain drop-shadow-sm select-none pointer-events-none" alt="Shield Icon" />
+
+            <div className="flex flex-col items-start">
+              <h3 className="text-[21px] md:text-[23px] font-bold text-[#1c2f35] leading-tight">
+                Safe. Trusted. Loving Care.
+              </h3>
+              <p className="text-[14px] md:text-[15px] text-slate-600 font-semibold mt-2 mb-5 leading-relaxed max-w-[420px]">
+                Every sitter is background-checked and reviewed by pet and home owners like you.
+              </p>
+              <Link to="/how-it-works" className="px-6 py-2.5 rounded-xl border border-[#C2CFB9] bg-[#EAEFE4] hover:bg-[#DDE8D6] text-[13px] font-extrabold text-[#1c2f35] transition-all shadow-sm inline-block">
+                Learn More
+              </Link>
+            </div>
           </div>
         </div>
 
