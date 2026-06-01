@@ -96,12 +96,16 @@ const UserProfile = () => {
     img: pet.image || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200&h=250&fit=crop'
   })) : [];
 
-  const homeFeatures = [
-    { key: 'nonSmoking', label: 'Non smoking, secure family home' },
-    { key: 'spaciousBackyard', label: 'Spacious backyard with a pool' },
-    { key: 'securityAlarm', label: 'Security alarm system and electric gate' },
-    { key: 'homeChecks', label: 'Basic home security checks' },
-  ].filter(f => user.homeFeatures?.[f.key]);
+  // Support both new string[] format and legacy boolean-object format
+  let homeFeatures: string[] = [];
+  if (Array.isArray(user.homeFeatures)) {
+    homeFeatures = user.homeFeatures;
+  } else if (user.homeFeatures && typeof user.homeFeatures === 'object') {
+    if (user.homeFeatures.nonSmoking)       homeFeatures.push('Non smoking, secure family home');
+    if (user.homeFeatures.spaciousBackyard) homeFeatures.push('Spacious backyard with a pool');
+    if (user.homeFeatures.securityAlarm)    homeFeatures.push('Security alarm system and electric gate');
+    if (user.homeFeatures.homeChecks)       homeFeatures.push('Basic home security checks');
+  }
 
   // Render star rating
   const StarRating = ({ rating }: { rating: number }) => (
@@ -188,7 +192,7 @@ const UserProfile = () => {
                     <Home size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
                     <span className="text-[12.5px] text-[#4A4743]">
                       <strong className="text-[#2D2926]">{pets.length}.Pets</strong>
-                      {user.homeFeatures?.nonSmoking ? ' - Non-Smoking Home' : ''}
+                      {homeFeatures.length > 0 ? ` - ${homeFeatures[0]}` : ''}
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5">
@@ -249,7 +253,7 @@ const UserProfile = () => {
                         <div className="w-[18px] h-[18px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
                           <Check size={10} strokeWidth={3} className="text-white" />
                         </div>
-                        <span className="text-[12.5px] text-[#4A4743] font-medium">{f.label}</span>
+                        <span className="text-[12.5px] text-[#4A4743] font-medium">{f}</span>
                       </div>
                     ))}
                   </div>
@@ -361,7 +365,7 @@ const UserProfile = () => {
                     <Home size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
                     <span className="text-[14px] text-[#4A4743]">
                       <strong className="text-[#2D2926]">{pets.length}.Pets</strong>
-                      {user.homeFeatures?.nonSmoking ? ' - Non-Smoking Home' : ''}
+                      {homeFeatures.length > 0 ? ` - ${homeFeatures[0]}` : ''}
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
@@ -426,7 +430,7 @@ const UserProfile = () => {
                         <div className="w-[20px] h-[20px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
                           <Check size={11} strokeWidth={3} className="text-white" />
                         </div>
-                        <span className="text-[14px] text-[#4A4743] font-medium">{f.label}</span>
+                        <span className="text-[14px] text-[#4A4743] font-medium">{f}</span>
                       </div>
                     ))}
                   </div>
