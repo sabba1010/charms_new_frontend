@@ -291,7 +291,7 @@ const UserProfile = () => {
       {/* DESKTOP LAYOUT */}
       {/* ======================= */}
       <div className="hidden md:block min-h-screen bg-[#FDFBF7] pt-28 pb-20">
-        <div className="max-w-[900px] mx-auto px-6">
+        <div className="max-w-[1100px] mx-auto px-6">
 
           {/* Back Button */}
           <div className="mb-8">
