@@ -3,10 +3,8 @@ import {
   MapPin, Star, ShieldCheck,
   MessageCircle, Home, Check,
   Calendar, Phone, Briefcase,
-  Share2, Heart, ChevronLeft,
-  Loader2
+  ChevronLeft, Loader2
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 
 const UserProfile = () => {
@@ -22,7 +20,6 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      // If it's the demo ID "1", immediately load the mock data and avoid API call
       if (id === '1') {
         setUser({
           displayName: "Sarah & Mark Wilson",
@@ -34,8 +31,8 @@ const UserProfile = () => {
           avatar: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=200&h=200&fit=crop",
           pets: [
             { name: "Buddy", type: "Dog / 5 Years Old", rating: 4.6, image: "https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=200&h=250&fit=crop" },
-            { name: "Bella", type: "Tubby - Cat", rating: 5.0, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=200&h=250&fit=crop" },
-            { name: "Rocky", type: "Rabbit / 2 Years Old", rating: 4.9, image: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?q=80&w=200&h=250&fit=crop" }
+            { name: "Bella", type: "Tubby - Cat", rating: 5.3, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=200&h=250&fit=crop" },
+            { name: "Rocky", type: "Rabbit / 2 Years Old", rating: 5.3, image: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?q=80&w=200&h=250&fit=crop" }
           ],
           homeFeatures: {
             nonSmoking: true,
@@ -68,7 +65,7 @@ const UserProfile = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center pt-24">
-        <Loader2 className="animate-spin text-[#6B7A5F]" size={32} />
+        <Loader2 className="animate-spin text-[#5C7A6B]" size={32} />
       </div>
     );
   }
@@ -77,14 +74,14 @@ const UserProfile = () => {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center pt-24 px-4 text-center">
         <p className="text-rose-500 font-bold text-lg mb-4">{error || 'User not found'}</p>
-        <Link to="/" className="px-6 py-2.5 bg-[#6B7A5F] text-white rounded-xl text-xs font-bold shadow-md">
+        <Link to="/" className="px-6 py-2.5 bg-[#5C7A6B] text-white rounded-xl text-xs font-bold shadow-md">
           Go Back Home
         </Link>
       </div>
     );
   }
 
-  const name = user.displayName || `${user.firstName} ${user.lastName}`;
+  const name = user.displayName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown User';
   const location = user.location || 'Not Specified';
   const phone = user.phone || 'Not Specified';
   const occupations = user.profession || 'Not Specified';
@@ -99,213 +96,368 @@ const UserProfile = () => {
     img: pet.image || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200&h=250&fit=crop'
   })) : [];
 
-  const homeFeatures = [];
-  if (user.homeFeatures?.nonSmoking) homeFeatures.push("Non smoking, secure family home");
-  if (user.homeFeatures?.spaciousBackyard) homeFeatures.push("Spacious backyard with a pool");
-  if (user.homeFeatures?.securityAlarm) homeFeatures.push("Security alarm system and electric gate");
-  if (user.homeFeatures?.homeChecks) homeFeatures.push("Basic home security checks");
+  const homeFeatures = [
+    { key: 'nonSmoking', label: 'Non smoking, secure family home' },
+    { key: 'spaciousBackyard', label: 'Spacious backyard with a pool' },
+    { key: 'securityAlarm', label: 'Security alarm system and electric gate' },
+    { key: 'homeChecks', label: 'Basic home security checks' },
+  ].filter(f => user.homeFeatures?.[f.key]);
 
-  const isLoggedIn = true; // Always allow view avatar on public profile for now or keep original logic
-
+  // Render star rating
+  const StarRating = ({ rating }: { rating: number }) => (
+    <div className="flex items-center gap-[2px]">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} size={10} className="fill-[#C9A567] text-[#C9A567]" strokeWidth={0} />
+      ))}
+      <span className="text-[10px] font-bold text-[#2D2926] ml-1">{rating}</span>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] pt-24 md:pt-32 pb-20">
-      {/* Outer Container to center everything including Back button */}
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
+    <>
+      {/* ======================= */}
+      {/* MOBILE LAYOUT */}
+      {/* ======================= */}
+      <div className="block md:hidden bg-white min-h-screen w-full pb-10 pt-[72px]">
 
-        {/* Back Button - Aligned with the card */}
-        <div className="mb-6 md:mb-10">
-          <Link to={-1 as any} className="inline-flex items-center gap-2 text-[#8C8273] hover:text-[#6B7A5F] transition-all font-bold group">
-            <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform md:w-5 md:h-5" />
-            <span className="text-sm md:text-base uppercase tracking-widest">Back</span>
-          </Link>
-        </div>
-
-        {/* Header Section */}
-        <div className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-[#F3EDE2] mb-10">
-          <div className="h-48 md:h-72 relative">
+        {/* Cover Image */}
+        <div className="relative">
+          <div className="absolute top-3 left-3 z-20">
+            <Link
+              to={-1 as any}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm shadow text-[#2D2926]"
+            >
+              <ChevronLeft size={18} />
+            </Link>
+          </div>
+          <div className="h-[180px] w-full">
             <img src={cover} alt="Cover" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/10"></div>
+          </div>
+        </div>
+
+        {/* Avatar overlapping cover */}
+        <div className="relative px-4">
+          <div className="absolute -top-[52px] left-4 z-10">
+            <div className="w-[104px] h-[104px] rounded-full border-[4px] border-white overflow-hidden shadow-md bg-white">
+              <img src={avatar} alt={name} className="w-full h-full object-cover" />
+            </div>
           </div>
 
-          <div className="px-6 md:px-12 pb-10 md:pb-12 relative">
-            {/* Avatar - overlapping cover */}
-            <div className="absolute -top-14 md:-top-20 left-6 md:left-12">
-              <div className="w-28 h-28 md:w-40 md:h-40 rounded-full border-[6px] border-white overflow-hidden shadow-2xl relative bg-white">
-                <img
-                  src={avatar}
-                  alt={name}
-                  className={`w-full h-full object-cover transition-all duration-700 ${!isLoggedIn ? 'blur-xl scale-110' : ''}`}
-                />
-                {!isLoggedIn && (
-                  <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white/30 rounded-full animate-ping" />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-20 md:pt-24">
-              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
-                <div className="space-y-3">
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2D2926] leading-tight">
-                    {name}
-                  </h1>
-                  <div className="flex flex-wrap items-center gap-4 md:gap-6">
-                    <div className="flex items-center gap-2 text-[#8C8273] text-sm font-medium">
-                      <div className="bg-[#FDFBF7] p-1.5 rounded-lg border border-[#F3EDE2]">
-                        <MapPin size={16} className="text-[#6B7A5F]" />
-                      </div>
-                      <span>{location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[#8C8273] text-[10px] font-bold uppercase tracking-[0.1em] bg-[#F9F7F3] px-3 py-1.5 rounded-full border border-[#F3EDE2]">
-                      <ShieldCheck size={12} className="text-[#6B7A5F]" />
-                      <span>Verified Poster</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 w-full lg:w-auto">
-                  <button className="flex-1 lg:flex-none bg-[#6B7A5F] text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-lg hover:bg-[#5D6246] transition-all transform hover:-translate-y-1">
-                    Contact {name.split(' ')[0]}
-                  </button>
-                  <button className="p-3.5 bg-white border border-[#F3EDE2] rounded-xl text-[#8C8273] hover:text-red-500 hover:border-red-100 transition-all shadow-sm group">
-                    <Heart size={20} className="group-hover:fill-red-500 transition-colors" />
-                  </button>
-                </div>
-              </div>
+          {/* Name + location (below avatar) */}
+          <div className="pt-[60px] pb-1">
+            <h1 className="text-[22px] font-serif font-bold text-[#2D2926] leading-tight">
+              {name}
+            </h1>
+            <div className="flex items-center gap-1 mt-1">
+              <MapPin size={13} className="text-[#788564]" />
+              <span className="text-[12px] text-[#6B6560] font-medium">{location}</span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Main Content Area */}
-          <div className="lg:col-span-8 space-y-8 md:space-y-12">
-            {/* Tab Navigation */}
-            <div className="bg-[#E9E4DB]/40 p-1 rounded-[1.5rem] flex sticky top-24 z-20 backdrop-blur-lg shadow-sm border border-[#F3EDE2]/50">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => {
-                    setActiveTab(tab);
-                    const element = document.getElementById(tab.toLowerCase());
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                  }}
-                  className={`flex-1 py-2.5 md:py-3 text-sm font-bold rounded-xl transition-all duration-300 ${activeTab === tab
-                      ? 'bg-white text-[#2D2926] shadow-sm transform scale-[1.01]'
-                      : 'text-[#8C8273] hover:text-[#2D2926]'
-                    }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
+        {/* Tabs */}
+        <div className="flex items-center px-4 mt-3 mb-1 border-b border-[#E8E2D8]">
+          {tabs.map((tab, i) => (
+            <React.Fragment key={tab}>
+              <button
+                onClick={() => setActiveTab(tab)}
+                className={`relative py-2.5 px-3 text-[13px] font-semibold transition-colors ${
+                  activeTab === tab ? 'text-[#2D2926]' : 'text-[#9A9188]'
+                }`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#788564] rounded-t-full" />
+                )}
+              </button>
+              {i < tabs.length - 1 && <span className="text-[#D5CEC0] mx-0.5 text-sm">|</span>}
+            </React.Fragment>
+          ))}
+        </div>
 
-            {/* Sections Container */}
-            <div className="space-y-12">
-              {/* About Us */}
-              <section id="profile" className="bg-white rounded-[2rem] p-8 md:p-10 shadow-sm border border-[#F3EDE2] scroll-mt-36">
-                <h2 className="text-xl md:text-2xl font-serif font-bold text-[#2D2926] mb-8 text-center">About Us</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-                  <div className="flex flex-col items-center p-6 bg-[#FDFBF7] rounded-[1.5rem] border border-[#F3EDE2] hover:border-[#6B7A5F]/20 transition-colors">
-                    <Home size={22} className="text-[#6B7A5F] mb-3" />
-                    <span className="text-sm font-bold text-[#2D2926]">{pets.length} Pets</span>
-                    <span className="text-[10px] text-[#8C8273] font-bold uppercase tracking-widest mt-1">Family size</span>
+        {/* Tab Content */}
+        <div className="px-4 pt-4">
+
+          {/* ── PROFILE TAB ── */}
+          {activeTab === 'Profile' && (
+            <div>
+              {/* Info row + Contact button */}
+              <div className="flex items-start justify-between gap-3 mb-6">
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <Home size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[12.5px] text-[#4A4743]">
+                      <strong className="text-[#2D2926]">{pets.length}.Pets</strong>
+                      {user.homeFeatures?.nonSmoking ? ' - Non-Smoking Home' : ''}
+                    </span>
                   </div>
-                  <div className="flex flex-col items-center p-6 bg-[#FDFBF7] rounded-[1.5rem] border border-[#F3EDE2] hover:border-[#6B7A5F]/20 transition-colors">
-                    <Phone size={22} className="text-[#6B7A5F] mb-3" />
-                    <span className="text-sm font-bold text-[#2D2926]">{phone}</span>
-                    <span className="text-[10px] text-[#8C8273] font-bold uppercase tracking-widest mt-1">Verified Contact</span>
+                  <div className="flex items-center gap-2.5">
+                    <Phone size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[12.5px] text-[#4A4743]">{phone}</span>
                   </div>
-                  <div className="flex flex-col items-center p-6 bg-[#FDFBF7] rounded-[1.5rem] border border-[#F3EDE2] hover:border-[#6B7A5F]/20 transition-colors">
-                    <Briefcase size={22} className="text-[#6B7A5F] mb-3" />
-                    <span className="text-sm font-bold text-[#2D2926] text-center truncate max-w-full">{occupations}</span>
-                    <span className="text-[10px] text-[#8C8273] font-bold uppercase tracking-widest mt-1">Profession</span>
+                  <div className="flex items-center gap-2.5">
+                    <Briefcase size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[12.5px] text-[#4A4743]">{occupations}</span>
                   </div>
                 </div>
-                <p className="text-[#5C564E] text-base leading-relaxed font-medium">
-                  {about}
-                </p>
+
+                <button className="bg-[#788564] hover:bg-[#626E51] active:scale-95 text-white px-3.5 py-2.5 rounded-[6px] text-[11px] font-bold shadow-sm shrink-0 whitespace-nowrap transition-all">
+                  Contact {name.split(' ')[0]} &amp; {name.split(' ').slice(-1)[0]}
+                </button>
+              </div>
+
+              {/* About Us */}
+              <section className="mb-6">
+                <h2 className="text-[19px] font-serif font-bold text-[#2D2926] mb-2.5">About Us</h2>
+                <p className="text-[12.5px] text-[#5A5550] leading-[1.7]">{about}</p>
               </section>
 
               {/* Meet Our Pets */}
-              <section id="availability" className="bg-white rounded-[2rem] p-8 md:p-10 shadow-sm border border-[#F3EDE2] scroll-mt-36">
-                <h2 className="text-xl md:text-2xl font-serif font-bold text-[#2D2926] mb-8">Meet Our Pets</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {pets.length === 0 ? (
-                    <p className="col-span-3 text-xs text-[#8C8273] italic text-center py-4 bg-[#FDFBF7] rounded-xl border border-[#F3EDE2]">No pets listed yet.</p>
-                  ) : (
-                    pets.map((pet: any, i: number) => (
-                      <div key={i} className="group">
-                        <div className="h-48 rounded-[1.5rem] overflow-hidden mb-4 shadow-md relative">
-                          <img src={pet.img} alt={pet.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
-                            <Star size={10} className="text-[#C9A567] fill-[#C9A567]" />
-                            <span className="text-[10px] font-black text-[#2D2926]">{pet.rating}</span>
+              <section className="mb-6">
+                <h2 className="text-[19px] font-serif font-bold text-[#2D2926] mb-3">Meet Our Pets</h2>
+                {pets.length === 0 ? (
+                  <p className="text-[12px] text-[#8C8273] italic">No pets listed yet.</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {pets.map((pet: any, i: number) => (
+                      <div key={i} className="bg-white rounded-xl overflow-hidden border border-[#EAE5DA] shadow-sm">
+                        <div className="h-[90px] w-full overflow-hidden">
+                          <img src={pet.img} alt={pet.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="p-2 pb-2.5">
+                          <h3 className="text-[12.5px] font-bold text-[#2D2926] leading-tight">{pet.name}</h3>
+                          <p className="text-[10px] text-[#7A746B] mt-0.5 leading-tight">{pet.type}</p>
+                          <div className="mt-1.5">
+                            <StarRating rating={pet.rating} />
                           </div>
                         </div>
-                        <h3 className="text-lg font-bold text-[#2D2926] mb-0.5">{pet.name}</h3>
-                        <p className="text-[10px] text-[#8C8273] font-bold uppercase tracking-widest">{pet.type}</p>
                       </div>
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </section>
 
               {/* Our Home */}
-              <section id="reviews" className="bg-white rounded-[2rem] p-8 md:p-10 shadow-sm border border-[#F3EDE2] scroll-mt-36">
-                <h2 className="text-xl md:text-2xl font-serif font-bold text-[#2D2926] mb-8">Our Home</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {homeFeatures.length === 0 ? (
-                    <p className="col-span-2 text-xs text-[#8C8273] italic text-center py-4 bg-[#FDFBF7] rounded-xl border border-[#F3EDE2]">No home features listed.</p>
-                  ) : (
-                    homeFeatures.map((feature, i) => (
-                      <div key={i} className="flex items-center gap-4 p-5 bg-[#FDFBF7] border border-[#F3EDE2] rounded-2xl group hover:border-[#6B7A5F]/40 transition-all duration-300">
-                        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-[#6B7A5F] shrink-0 transform group-hover:rotate-12 transition-transform">
-                          <Check size={16} strokeWidth={3} />
+              <section className="mb-8">
+                <h2 className="text-[19px] font-serif font-bold text-[#2D2926] mb-3">Our Home</h2>
+                {homeFeatures.length === 0 ? (
+                  <p className="text-[12px] text-[#8C8273] italic">No home features listed.</p>
+                ) : (
+                  <div className="space-y-2.5">
+                    {homeFeatures.map((f, i) => (
+                      <div key={i} className="flex items-center gap-2.5">
+                        <div className="w-[18px] h-[18px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
+                          <Check size={10} strokeWidth={3} className="text-white" />
                         </div>
-                        <span className="text-sm font-bold text-[#5C564E]">{feature}</span>
+                        <span className="text-[12.5px] text-[#4A4743] font-medium">{f.label}</span>
                       </div>
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </section>
+
+              {/* Message Button */}
+              <div className="flex justify-center pb-2">
+                <button className="bg-[#C5997A] hover:bg-[#B38568] active:scale-95 text-white px-12 py-3 rounded-[6px] text-[13px] font-bold shadow-md transition-all">
+                  Message {name.split(' ')[0]} &amp; {name.split(' ').slice(-1)[0]}
+                </button>
+              </div>
             </div>
+          )}
+
+          {/* ── AVAILABILITY TAB ── */}
+          {activeTab === 'Availability' && (
+            <div className="py-12 text-center border border-[#EAE5DA] rounded-xl bg-white/60">
+              <Calendar className="w-8 h-8 text-[#D5CEC0] mx-auto mb-2" />
+              <p className="text-[#8C8273] text-[12px] font-medium">No availability calendar set up yet.</p>
+            </div>
+          )}
+
+          {/* ── REVIEWS TAB ── */}
+          {activeTab === 'Reviews' && (
+            <div className="py-12 text-center border border-[#EAE5DA] rounded-xl bg-white/60">
+              <Star className="w-8 h-8 text-[#D5CEC0] mx-auto mb-2" />
+              <p className="text-[#8C8273] text-[12px] font-medium">No reviews available for this user yet.</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ======================= */}
+      {/* DESKTOP LAYOUT */}
+      {/* ======================= */}
+      <div className="hidden md:block min-h-screen bg-[#FDFBF7] pt-28 pb-20">
+        <div className="max-w-[900px] mx-auto px-6">
+
+          {/* Back Button */}
+          <div className="mb-8">
+            <Link
+              to={-1 as any}
+              className="inline-flex items-center gap-2 text-[#8C8273] hover:text-[#5C7A6B] transition-colors font-semibold text-[14px] group"
+            >
+              <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
+              <span>Back</span>
+            </Link>
           </div>
 
-          {/* Sidebar Area */}
-          <div className="lg:col-span-4 space-y-10">
-            <div className="sticky top-24 space-y-8">
-              <section className="bg-[#111d21] text-white rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#6B7A5F]/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-[#6B7A5F]/20 transition-colors"></div>
-                <h3 className="text-2xl font-serif font-bold mb-6 relative">Send a Message</h3>
-                <p className="text-slate-400 text-base mb-10 leading-relaxed relative">
-                  Contact {name.split(' ')[0]} to discuss job details or introduce yourself. They are usually quick to respond!
-                </p>
-                <button className="w-full bg-[#6B7A5F] text-white py-5 rounded-2xl font-bold text-xl hover:bg-[#5D6246] transition-all flex items-center justify-center gap-4 group/btn shadow-lg">
-                  <MessageCircle size={24} className="group-hover/btn:scale-110 transition-transform" />
-                  Message Now
-                </button>
-              </section>
+          {/* Profile Card */}
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#EEE8DC] mb-6">
+            {/* Cover */}
+            <div className="h-[220px] relative">
+              <img src={cover} alt="Cover" className="w-full h-full object-cover" />
+            </div>
 
-              <div className="bg-white rounded-[2.5rem] p-10 border border-[#F3EDE2] text-center shadow-sm">
-                <p className="text-sm font-bold text-[#8C8273] uppercase tracking-[0.2em] mb-6">Share this Profile</p>
-                <div className="flex justify-center gap-6">
-                  <button className="p-4 bg-[#FDFBF7] rounded-2xl border border-[#F3EDE2] text-[#8C8273] hover:text-[#6B7A5F] hover:border-[#6B7A5F]/30 transition-all shadow-sm">
-                    <Share2 size={24} />
-                  </button>
-                  <button className="p-4 bg-[#FDFBF7] rounded-2xl border border-[#F3EDE2] text-[#8C8273] hover:text-[#6B7A5F] hover:border-[#6B7A5F]/30 transition-all shadow-sm">
-                    <Share2 size={24} />
-                  </button>
+            {/* Avatar + Name row */}
+            <div className="px-8 pb-6 relative">
+              {/* Avatar */}
+              <div className="absolute -top-[52px] left-8">
+                <div className="w-[104px] h-[104px] rounded-full border-[4px] border-white overflow-hidden shadow-lg bg-white">
+                  <img src={avatar} alt={name} className="w-full h-full object-cover" />
+                </div>
+              </div>
+
+              <div className="pt-[62px]">
+                <div className="flex items-end justify-between gap-6">
+                  <div>
+                    <h1 className="text-[28px] font-serif font-bold text-[#2D2926] leading-tight">{name}</h1>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <MapPin size={14} className="text-[#788564]" />
+                      <span className="text-[13px] text-[#6B6560] font-medium">{location}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Tabs row */}
+            <div className="flex items-center px-8 border-t border-[#EEE8DC]">
+              {tabs.map((tab, i) => (
+                <React.Fragment key={tab}>
+                  <button
+                    onClick={() => setActiveTab(tab)}
+                    className={`relative py-3.5 px-4 text-[14px] font-semibold transition-colors ${
+                      activeTab === tab ? 'text-[#2D2926]' : 'text-[#9A9188] hover:text-[#5C7A6B]'
+                    }`}
+                  >
+                    {tab}
+                    {activeTab === tab && (
+                      <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#788564] rounded-t-full" />
+                    )}
+                  </button>
+                  {i < tabs.length - 1 && <span className="text-[#D5CEC0] mx-1">|</span>}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
+
+          {/* Tab Content */}
+          {activeTab === 'Profile' && (
+            <div className="bg-white rounded-2xl border border-[#EEE8DC] shadow-sm p-8 space-y-8">
+
+              {/* Info row + Contact button */}
+              <div className="flex items-start justify-between gap-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Home size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[14px] text-[#4A4743]">
+                      <strong className="text-[#2D2926]">{pets.length}.Pets</strong>
+                      {user.homeFeatures?.nonSmoking ? ' - Non-Smoking Home' : ''}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Phone size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[14px] text-[#4A4743]">{phone}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Briefcase size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[14px] text-[#4A4743]">{occupations}</span>
+                  </div>
+                </div>
+
+                <button className="bg-[#788564] hover:bg-[#626E51] active:scale-95 text-white px-5 py-3 rounded-[8px] text-[13px] font-bold shadow-sm shrink-0 whitespace-nowrap transition-all">
+                  Contact {name.split(' ')[0]} &amp; {name.split(' ').slice(-1)[0]}
+                </button>
+              </div>
+
+              {/* About Us */}
+              <section>
+                <h2 className="text-[22px] font-serif font-bold text-[#2D2926] mb-3">About Us</h2>
+                <p className="text-[14px] text-[#5A5550] leading-[1.75]">{about}</p>
+              </section>
+
+              {/* Meet Our Pets */}
+              <section>
+                <h2 className="text-[22px] font-serif font-bold text-[#2D2926] mb-4">Meet Our Pets</h2>
+                {pets.length === 0 ? (
+                  <p className="text-[13px] text-[#8C8273] italic">No pets listed yet.</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-4">
+                    {pets.map((pet: any, i: number) => (
+                      <div key={i} className="bg-white rounded-xl overflow-hidden border border-[#EAE5DA] shadow-sm hover:shadow-md transition-shadow group">
+                        <div className="h-[130px] w-full overflow-hidden">
+                          <img
+                            src={pet.img}
+                            alt={pet.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="p-3 pb-4">
+                          <h3 className="text-[15px] font-bold text-[#2D2926]">{pet.name}</h3>
+                          <p className="text-[11px] text-[#7A746B] mt-0.5">{pet.type}</p>
+                          <div className="mt-2">
+                            <StarRating rating={pet.rating} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Our Home */}
+              <section>
+                <h2 className="text-[22px] font-serif font-bold text-[#2D2926] mb-4">Our Home</h2>
+                {homeFeatures.length === 0 ? (
+                  <p className="text-[13px] text-[#8C8273] italic">No home features listed.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {homeFeatures.map((f, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-[20px] h-[20px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
+                          <Check size={11} strokeWidth={3} className="text-white" />
+                        </div>
+                        <span className="text-[14px] text-[#4A4743] font-medium">{f.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Message Button */}
+              <div className="flex justify-center pt-2">
+                <button className="bg-[#C5997A] hover:bg-[#B38568] active:scale-95 text-white px-14 py-3.5 rounded-[8px] text-[14px] font-bold shadow-md transition-all">
+                  Message {name.split(' ')[0]} &amp; {name.split(' ').slice(-1)[0]}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'Availability' && (
+            <div className="bg-white rounded-2xl border border-[#EEE8DC] shadow-sm py-20 text-center">
+              <Calendar className="w-12 h-12 text-[#D5CEC0] mx-auto mb-3" />
+              <p className="text-[#8C8273] text-[14px] font-medium">No availability calendar set up yet.</p>
+            </div>
+          )}
+
+          {activeTab === 'Reviews' && (
+            <div className="bg-white rounded-2xl border border-[#EEE8DC] shadow-sm py-20 text-center">
+              <Star className="w-12 h-12 text-[#D5CEC0] mx-auto mb-3" />
+              <p className="text-[#8C8273] text-[14px] font-medium">No reviews available for this user yet.</p>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
