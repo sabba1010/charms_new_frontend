@@ -7,6 +7,10 @@ import {
 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
+import logo1 from '../assets/png/1 (1).png';
+import logo2 from '../assets/png/2 (1).png';
+import logo3 from '../assets/png/3 (1).png';
+
 const UserProfile = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('Profile');
@@ -187,27 +191,49 @@ const UserProfile = () => {
             <div>
               {/* Info row + Contact button */}
               <div className="flex items-start justify-between gap-3 mb-6">
-                <div className="space-y-2.5">
-                  <div className="flex items-center gap-2.5">
-                    <Home size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
-                    <span className="text-[12.5px] text-[#4A4743]">
+                <div className="space-y-3.5">
+                  <div className="flex items-center gap-3">
+                    <Home size={18} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[14px] text-[#4A4743]">
                       <strong className="text-[#2D2926]">{pets.length}.Pets</strong>
                       {homeFeatures.length > 0 ? ` - ${homeFeatures[0]}` : ''}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <Phone size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
-                    <span className="text-[12.5px] text-[#4A4743]">{phone}</span>
+                  <div className="flex items-center gap-3">
+                    <Phone size={18} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[14px] text-[#4A4743]">{phone}</span>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <Briefcase size={14} className="text-[#788564] shrink-0" strokeWidth={2.5} />
-                    <span className="text-[12.5px] text-[#4A4743]">{occupations}</span>
+                  <div className="flex items-center gap-3">
+                    <Briefcase size={18} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[14px] text-[#4A4743]">{occupations}</span>
                   </div>
                 </div>
 
                 <button className="bg-[#788564] hover:bg-[#626E51] active:scale-95 text-white px-3.5 py-2.5 rounded-[6px] text-[11px] font-bold shadow-sm shrink-0 whitespace-nowrap transition-all">
                   Contact {name.split(' ')[0]} &amp; {name.split(' ').slice(-1)[0]}
                 </button>
+              </div>
+
+              {/* Verified Banner */}
+              <div className="mb-6 space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-[20px] h-[20px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
+                    <Check size={12} strokeWidth={3} className="text-white" />
+                  </div>
+                  <span className="text-[15px] font-bold text-[#3D5030]">Fully Verified Member</span>
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {['ID Verified', 'Address Verified', 'Police Clearance'].map((v, i) => (
+                    <div key={i} className="flex items-center gap-2 bg-[#FAF8F5] border border-[#E8E2D8] rounded-[10px] px-3.5 py-2">
+                      <img 
+                        src={[logo1, logo2, logo3][i]} 
+                        alt={v} 
+                        className="w-[32px] h-[32px] object-contain drop-shadow-sm" 
+                      />
+                      <span className="text-[14px] font-bold text-[#1B365D]">{v}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* About Us */}
@@ -360,27 +386,49 @@ const UserProfile = () => {
 
               {/* Info row + Contact button */}
               <div className="flex items-start justify-between gap-6">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Home size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
-                    <span className="text-[14px] text-[#4A4743]">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3.5">
+                    <Home size={22} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[17px] text-[#4A4743]">
                       <strong className="text-[#2D2926]">{pets.length}.Pets</strong>
                       {homeFeatures.length > 0 ? ` - ${homeFeatures[0]}` : ''}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Phone size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
-                    <span className="text-[14px] text-[#4A4743]">{phone}</span>
+                  <div className="flex items-center gap-3.5">
+                    <Phone size={22} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[17px] text-[#4A4743]">{phone}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Briefcase size={16} className="text-[#788564] shrink-0" strokeWidth={2.5} />
-                    <span className="text-[14px] text-[#4A4743]">{occupations}</span>
+                  <div className="flex items-center gap-3.5">
+                    <Briefcase size={22} className="text-[#788564] shrink-0" strokeWidth={2.5} />
+                    <span className="text-[17px] text-[#4A4743]">{occupations}</span>
                   </div>
                 </div>
 
                 <button className="bg-[#788564] hover:bg-[#626E51] active:scale-95 text-white px-5 py-3 rounded-[8px] text-[13px] font-bold shadow-sm shrink-0 whitespace-nowrap transition-all">
                   Contact {name.split(' ')[0]} &amp; {name.split(' ').slice(-1)[0]}
                 </button>
+              </div>
+
+              {/* Verified Banner */}
+              <div className="mb-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-[24px] h-[24px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
+                    <Check size={14} strokeWidth={3} className="text-white" />
+                  </div>
+                  <span className="text-[17px] font-bold text-[#3D5030]">Fully Verified Member</span>
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  {['ID Verified', 'Address Verified', 'Police Clearance'].map((v, i) => (
+                    <div key={i} className="flex items-center gap-3 bg-[#FAF8F5] border border-[#E8E2D8] rounded-[12px] px-4 py-2.5">
+                      <img 
+                        src={[logo1, logo2, logo3][i]} 
+                        alt={v} 
+                        className="w-[40px] h-[40px] object-contain drop-shadow-sm" 
+                      />
+                      <span className="text-[15px] font-bold text-[#1B365D]">{v}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* About Us */}
