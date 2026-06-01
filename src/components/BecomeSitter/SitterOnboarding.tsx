@@ -48,10 +48,10 @@ const SitterOnboarding = () => {
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-[26px] md:text-[40px] font-fraunces font-bold text-[#1a2e35] mb-4">
-            Four steps to your first booking
+            How to join
           </h2>
           <h3 className="text-[16px] md:text-[20px] font-medium text-[#1a2e35]/90 mb-6">
-            How to join
+            Four steps to your first booking
           </h3>
         </div>
 

@@ -7,6 +7,8 @@ import WhatWeOfferSection from '../components/home/WhatWeOfferSection';
 import Testimonials from '../components/home/Testimonials/Testimonials';
 import GetStartedCTA from '../components/home/GetStartedCTA';
 import TrustAndSittersSection from '../components/home/TrustAndSittersSection';
+import BecomeTrustedSitterInfo from '../components/BecomeSitter/BecomeTrustedSitterInfo';
+
 // import Filter from '../components/home/Filter/Filter';
 
 const Home = () => {
@@ -15,6 +17,7 @@ const Home = () => {
       <Hero />
       <HowItWorksSection />
       {/* <TrustedCareInfoSection /> */}
+      <BecomeTrustedSitterInfo />
       <SafeHandsSection />
       <TrustAndSittersSection />
       {/* <ChooseListingsSection /> */}
