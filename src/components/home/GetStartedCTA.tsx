@@ -25,7 +25,7 @@ const GetStartedCTA = () => {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-[-20px]">
           <Link
-            to="/listings"
+            to="/find-sitter"
             className="w-full sm:w-auto px-10 py-4 bg-[#948a54] text-white rounded-xl font-bold text-[16px] hover:bg-[#837a4a] transition-all duration-300 shadow-lg active:scale-95"
           >
             Find a Sitter

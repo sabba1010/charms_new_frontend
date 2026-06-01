@@ -12,7 +12,8 @@ const supportSteps = [
     description: "We offer full technical help and support for anything related to the platform itself, including account management, bookings, and navigation.",
     icon: icon1,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "70px",
+    translateY: "12px"
   },
   {
     number: "2",
@@ -20,7 +21,8 @@ const supportSteps = [
     description: "We do not get involved in disputes between users. We ask that all members communicate openly and resolve issues amicably amongst themselves.",
     icon: icon2,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "55px",
+    translateY: "5px"
   },
   {
     number: "3",
@@ -28,7 +30,8 @@ const supportSteps = [
     description: "If you have a serious complaint regarding behavior that violates our terms of service, please use the contact form above to reach our safety team.",
     icon: icon3,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "70px",
+    translateY: "14px"
   }
 ];
 
@@ -88,7 +91,7 @@ const ContactSupportInfo = () => {
                 <img
                   src={step.icon}
                   alt={step.title}
-                  style={{ width: step.customWidth, height: step.customHeight }}
+                  style={{ width: step.customWidth, height: step.customHeight, transform: `translateY(${step.translateY})` }}
                   className="object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                 />
               </div>

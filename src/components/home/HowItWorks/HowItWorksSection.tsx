@@ -14,15 +14,17 @@ const steps = [
     description: "Create a listing for sitters to apply or find vetted sitters in your area by searching.",
     icon: searchIcon,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "70px",
+    translateY: "12px"
   },
   {
     number: "2",
     title: "Connect & Book",
-    description: "Review applications. Connect with sitters you like and book.",
+    description: "Review applications, connect with sitters you trust, and book with confidence.",
     icon: calendarIcon,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "68px",
+    translateY: "8px"
   },
   {
     number: "3",
@@ -30,7 +32,8 @@ const steps = [
     description: "Focus on what matters while your home and pets are in safe hands.",
     icon: houseIcon,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "70px",
+    translateY: "8px"
   },
   {
     number: "4",
@@ -38,7 +41,8 @@ const steps = [
     description: "Share your experience to help the community grow.",
     icon: StarIcon,
     customWidth: "auto",
-    customHeight: "75px"
+    customHeight: "70px",
+    translateY: "8px"
   }
 ];
 
@@ -94,12 +98,12 @@ const HowItWorksSection = () => {
                   <img
                     src={step.icon}
                     alt={step.title}
-                    style={{ width: step.customWidth, height: step.customHeight }}
+                    style={{ width: step.customWidth, height: step.customHeight, transform: `translateY(${step.translateY})` }}
                     className="object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
                   <div
-                    style={{ width: step.customWidth, height: step.customHeight }}
+                    style={{ width: step.customWidth, height: step.customHeight, transform: `translateY(${step.translateY})` }}
                     className="flex items-center justify-center drop-shadow-md group-hover:scale-110 transition-transform duration-500"
                   >
                     {step.icon}

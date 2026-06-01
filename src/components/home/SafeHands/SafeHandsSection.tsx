@@ -55,7 +55,7 @@ const SafeHandsSection = () => {
               Your Pets <span style={{ fontFamily: 'serif', fontWeight: 600 }}>&</span> Home in Safe Hands
             </motion.h3>
 
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -63,11 +63,15 @@ const SafeHandsSection = () => {
               className="text-[#1a2e35]/80 text-[18px] leading-relaxed"
               style={{ fontFamily: 'Inter', fontWeight: 400 }}
             >
-              At Home Paw, we believe your home and pets deserve trusted and reliable care. Our focus is on
-              safety, verified profiles, honest reviews, and creating a community you can feel confident in.
-              Whether you're leaving for a weekend, planning an extended trip or simply need a trusted daily
-              service, we're here to help you find caring sitters you can trust with what matters most.
-            </motion.p>
+              <p className="mb-4">
+                At Home Paw, we believe your home and pets deserve trusted and reliable care. Our focus is on
+                safety, verified profiles, honest reviews, and creating a community you can feel confident in.
+              </p>
+              <p>
+                Whether you're leaving for a weekend, planning an extended trip or simply need a trusted daily
+                service, we're here to help you find caring sitters you can trust with what matters most.
+              </p>
+            </motion.div>
           </div>
 
           {/* Right Image */}
