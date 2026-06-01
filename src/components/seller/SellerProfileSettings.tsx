@@ -5,12 +5,27 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
+import logo1 from '../../assets/png/1 (1).png';
+import logo2 from '../../assets/png/2 (1).png';
+import logo3 from '../../assets/png/3 (1).png';
+
 interface Service {
   id: number;
   name: string;
   price: string;
   unit: string;
 }
+
+const StarRow = ({ rating, size = 13 }: { rating: number; size?: number }) => (
+  <div className="flex items-center gap-0.5">
+    {[1, 2, 3, 4, 5].map(s => (
+      <Star key={s} size={size}
+        className={s <= Math.round(rating) ? 'fill-[#C9A567] text-[#C9A567]' : 'fill-[#E8E2D8] text-[#E8E2D8]'}
+        strokeWidth={0}
+      />
+    ))}
+  </div>
+);
 
 const SellerProfileSettings = () => {
   // 1. Core Profile Details state
@@ -329,235 +344,185 @@ const SellerProfileSettings = () => {
           <span>Real-time Live Sitter Profile Preview</span>
         </div>
 
-        {/* Main preview container mimicking their second uploaded screenshot exactly! */}
-        <div className="bg-[#fcfcfc] border border-slate-100 rounded-2xl p-5 space-y-6 shadow-sm">
+        {/* Main preview container mirroring SitterProfile.tsx */}
+        <div className="space-y-5 bg-[#FAF8F5] p-5 rounded-2xl border border-slate-100 shadow-inner overflow-hidden">
           
-          {/* Header Visual Box */}
-          <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm relative">
-            
-            {/* Banner Backdrop */}
-            <div className="h-44 w-full relative overflow-hidden bg-slate-100">
-              <img 
-                src={profile.coverImage} 
-                alt="Sitter banner cover" 
-                className="w-full h-full object-cover transition-all duration-300"
-              />
+          {/* Main card */}
+          <div className="bg-white rounded-2xl border border-[#EEE8DC] overflow-hidden shadow-sm">
+            {/* Cover */}
+            <div className="h-[140px] overflow-hidden">
+              <img src={profile.coverImage} alt="cover" className="w-full h-full object-cover" />
             </div>
-
-            {/* Profile Avatar and Info */}
-            <div className="px-6 pb-6 pt-16 relative">
-              
-              {/* Avatar overlapping backdrop banner */}
-              <div className="absolute -top-12 left-6">
-                <img 
-                  src={profile.avatar} 
-                  alt="Sitter portrait" 
-                  className="w-24 h-24 rounded-full object-cover ring-4 ring-white shadow-md transition-all duration-300"
-                />
+            {/* Avatar + info */}
+            <div className="px-6 pb-6 relative">
+              <div className="absolute -top-[45px] left-6">
+                <img src={profile.avatar} alt="avatar" className="w-[90px] h-[90px] rounded-full border-[4px] border-white object-cover shadow-lg" />
               </div>
 
-              {/* Title & Info */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <h3 className="text-xl font-bold font-serif text-slate-800 transition-all duration-300">
-                    {profile.fullName || 'No Name Configured'}
-                  </h3>
-                  
-                  {/* Badges row */}
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-slate-400 font-semibold">
-                    <span className="flex items-center gap-0.5">
-                      <MapPin size={12} /> {profile.location}
-                    </span>
-                    <span className="flex items-center gap-0.5">
-                      <Star size={11} className="text-amber-400 fill-amber-400" />
-                      <Star size={11} className="text-amber-400 fill-amber-400" />
-                      <Star size={11} className="text-amber-400 fill-amber-400" />
-                      <Star size={11} className="text-amber-400 fill-amber-400" />
-                      <span className="text-slate-500 font-bold ml-1">{profile.reviewsCount} reviews</span>
-                    </span>
-                    <span className="text-[9px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                      <Clock size={10} /> Last Active: {profile.lastActive}
-                    </span>
+              <div className="pt-[52px] flex items-start justify-between gap-4">
+                <div>
+                  <h1 className="text-[20px] font-serif font-bold text-[#2D2926] leading-tight">{profile.fullName || 'Sitter Name'}</h1>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin size={12} className="text-[#788564]" />
+                      <span className="text-[12px] text-[#6B6560] font-medium">{profile.location || 'Location'}</span>
+                      <span className="flex items-center gap-1 bg-[#F2F6EE] border border-[#C5D1B2] text-[#5D7050] text-[10px] font-bold px-2 py-0.5 rounded-full ml-1">
+                        <Check size={10} strokeWidth={3} /> Verified
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <StarRow rating={profile.rating} size={12} />
+                      <span className="text-[11px] text-[#9A9188] underline">{profile.reviewsCount} reviews</span>
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <button className="bg-[#5c7a6b] hover:bg-[#465d51] text-white px-4.5 py-2 rounded-full text-xs font-bold transition-all shadow-sm">
+                <div className="text-right shrink-0">
+                  <div className="flex items-center gap-1.5 text-[10px] text-[#9A9188] justify-end mb-2">
+                    <Clock size={10} /> Last active {profile.lastActive}
+                  </div>
+                  <button className="bg-[#788564] text-white px-4 py-2 rounded-lg text-[12px] font-bold shadow-sm whitespace-nowrap">
                     Request Booking
                   </button>
-                  <button className="p-2 border border-slate-100 rounded-full hover:bg-slate-50 text-slate-400">
-                    <Heart size={14} className="fill-current text-slate-200" />
-                  </button>
                 </div>
               </div>
-
             </div>
 
-          </div>
-
-          {/* Navigation tabs simulation */}
-          <div className="bg-slate-50 p-1 rounded-full border border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500">
-            <span className="flex-1 text-center py-2 bg-white text-slate-800 rounded-full shadow-sm">Profile</span>
-            <span className="flex-1 text-center py-2">Availability</span>
-            <span className="flex-1 text-center py-2">Reviews</span>
-          </div>
-
-          {/* About Me Section Card */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-6">
-            <div className="space-y-1">
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">About Me</h4>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium transition-all duration-300">
-                {profile.bio || 'Tell potential clients about yourself...'}
-              </p>
+            {/* Tabs */}
+            <div className="flex items-center border-t border-[#EEE8DC] px-6">
+              {['Profile', 'Availability', 'Reviews'].map((t, i) => (
+                <React.Fragment key={t}>
+                  <div className={`relative py-3 px-3 text-[12px] font-semibold ${i === 0 ? 'text-[#2D2926]' : 'text-[#B5AEA5]'}`}>
+                    {t}
+                    {i === 0 && <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#788564] rounded-t-full" />}
+                  </div>
+                  {i < 2 && <span className="text-[#DDD8CF] mx-1">|</span>}
+                </React.Fragment>
+              ))}
             </div>
+          </div>
 
-            {/* Dynamic Services offered Cards grid */}
-            <div className="space-y-3 pt-2">
-              <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Services Offered</h5>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {services.length === 0 ? (
-                  <p className="col-span-2 text-xs text-slate-400 italic py-2">No services configured yet.</p>
-                ) : (
-                  services.map((service) => (
-                    <div key={service.id} className="bg-slate-50/50 border border-slate-100/80 rounded-xl p-3.5 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-slate-700">
-                        <Dog size={16} className="text-[#6B7A5F]" />
-                        <span className="text-xs font-bold">{service.name}</span>
-                      </div>
-                      <span className="text-xs font-extrabold text-slate-800">R{service.price}/{service.unit}</span>
+          {/* Verified banner */}
+          {(profile.idVerified || profile.addressVerified || profile.policeClearance) && (
+            <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-[20px] h-[20px] rounded-full bg-[#788564] flex items-center justify-center shrink-0">
+                  <Check size={12} strokeWidth={3} className="text-white" />
+                </div>
+                <span className="text-[15px] font-bold text-[#3D5030]">Fully Verified Member</span>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { id: 'idVerified', label: 'ID Verified' },
+                  { id: 'addressVerified', label: 'Address Verified' },
+                  { id: 'policeClearance', label: 'Police Clearance' }
+                ].map((v, i) => {
+                  if (!profile[v.id as keyof typeof profile]) return null;
+                  return (
+                    <div key={v.id} className="flex items-center gap-2 bg-[#FAF8F5] border border-[#E8E2D8] rounded-[10px] px-3.5 py-2">
+                      <img src={[logo1, logo2, logo3][i]} alt={v.label} className="w-[28px] h-[28px] object-contain drop-shadow-sm" />
+                      <span className="text-[12px] font-bold text-[#1B365D]">{v.label}</span>
                     </div>
-                  ))
-                )}
+                  );
+                })}
               </div>
             </div>
+          )}
+
+          {/* Services Offered */}
+          <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm">
+            <h3 className="text-[11px] font-bold text-[#9A9188] uppercase tracking-widest mb-3.5">Services Offered</h3>
+            <div className="flex flex-wrap gap-3">
+              {services.length === 0 ? <p className="text-xs text-slate-400 italic">No services</p> : services.map(s => (
+                <div key={s.id} className="flex items-center gap-2.5 bg-[#FAF8F5] border border-[#E8E2D8] rounded-[10px] px-4 py-2.5">
+                  <Dog size={16} className="text-[#788564]" />
+                  <span className="text-[13px] font-bold text-[#2D2926]">{s.name}</span>
+                  <span className="text-[11px] font-semibold text-[#8C8273]">R{s.price}/{s.unit}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Availability Grid Box */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-50 pb-2">
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Availability</h4>
-              <Calendar size={14} className="text-slate-400" />
-            </div>
+          {/* About Me */}
+          <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm">
+            <h3 className="text-[15px] font-serif font-bold text-[#2D2926] mb-2">About Me</h3>
+            <p className="text-[12px] text-[#5A5550] leading-[1.75] whitespace-pre-line">{profile.bio}</p>
+          </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="p-1"></th>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(n => (
-                      <th key={n} className="p-1 text-[9px] font-bold text-slate-300">{n}</th>
+          {/* Availability Grid */}
+          <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm overflow-x-auto">
+            <h3 className="text-[15px] font-serif font-bold text-[#2D2926] mb-4">Availability</h3>
+            <table className="w-full text-[12px] min-w-[400px]">
+              <thead>
+                <tr>
+                  <th className="pb-3 w-[50px]"></th>
+                  {[20, 21, 22, 24, 25, 26, 23, 28].map(d => (
+                    <th key={d} className="pb-3 text-center text-[#9A9188] font-semibold">{d}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(['Tor', 'Kar', 'Suir'] as const).map(row => (
+                  <tr key={row} className="border-b border-[#F0EAE0] last:border-0">
+                    <td className="py-2.5 text-left font-bold text-[#9A9188]">{row}</td>
+                    {availability[row].map((s, j) => (
+                      <td key={j} className="py-2.5 px-1 text-center">
+                        {s && (
+                          <div className="w-[20px] h-[20px] mx-auto rounded-md bg-[#F2F6EE] border border-[#C5D1B2] flex items-center justify-center">
+                            <Check size={10} strokeWidth={3} className="text-[#788564]" />
+                          </div>
+                        )}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {(['Tor', 'Kar', 'Suir'] as const).map((row) => (
-                    <tr key={row} className="border-t border-slate-50/50">
-                      <td className="p-1.5 text-[10px] font-bold text-slate-400">{row}</td>
-                      {availability[row].map((isActive, index) => (
-                        <td key={index} className="p-1.5 text-center">
-                          {isActive && (
-                            <div className="w-4 h-4 bg-[#6B7A5F]/10 text-[#6B7A5F] rounded-full flex items-center justify-center mx-auto">
-                              <Check size={10} strokeWidth={3} />
-                            </div>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          {/* Sitter reviews simulator block */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-5">
-            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">{profile.fullName.split(' ')[0]}'s Reviews</h4>
+          {/* Reviews */}
+          <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm space-y-5">
+            <h3 className="text-[15px] font-serif font-bold text-[#2D2926]">{profile.fullName.split(' ')[0]}'s Reviews</h3>
             
-            <div className="space-y-4 divide-y divide-slate-50">
-              {/* Review 1 */}
-              <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img 
-                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" 
-                      alt="Reviewer Rachel" 
-                      className="w-8 h-8 rounded-full object-cover" 
-                    />
-                    <div>
-                      <h5 className="text-[11px] font-bold text-slate-800">Rachel M.</h5>
-                      <span className="text-[9px] text-slate-400 font-bold uppercase">Cape Town • ⭐⭐⭐⭐</span>
+            <div className="border-b border-[#F0EAE0] pb-4">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" alt="Reviewer" className="w-9 h-9 rounded-full object-cover shrink-0" />
+                  <div>
+                    <p className="text-[12px] font-bold text-[#2D2926]">Rachel M.</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <StarRow rating={4} size={10} />
+                      <span className="text-[10px] font-semibold text-[#8C8273]">Cape Town</span>
                     </div>
                   </div>
-                  <span className="text-[9px] text-slate-400 font-semibold">3 weeks ago</span>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed font-medium italic">
-                  "Experienced pet sitter {profile.fullName.split(' ')[0]} is easy, highly reliable, and very caring. Sitters like her are hard to find!"
-                </p>
+                <span className="text-[10px] text-[#9A9188] font-medium">3 weeks ago</span>
               </div>
+              <p className="text-[12px] text-[#5A5550] leading-[1.6]">Experienced pet sitter {profile.fullName.split(' ')[0]} is friendly and warm. Highly reliable and very caring.</p>
+            </div>
 
-              {/* Review 2 */}
-              <div className="space-y-2 pt-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img 
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" 
-                      alt="Reviewer Stephen" 
-                      className="w-8 h-8 rounded-full object-cover" 
-                    />
-                    <div>
-                      <h5 className="text-[11px] font-bold text-slate-800">Stephen T.</h5>
-                      <span className="text-[9px] text-slate-400 font-bold uppercase">Cape Town • ⭐⭐⭐⭐⭐</span>
+            <div className="pb-1">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" alt="Reviewer" className="w-9 h-9 rounded-full object-cover shrink-0" />
+                  <div>
+                    <p className="text-[12px] font-bold text-[#2D2926]">Stephen T.</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <StarRow rating={5} size={10} />
+                      <span className="text-[10px] font-semibold text-[#8C8273]">Cape Town</span>
                     </div>
                   </div>
-                  <span className="text-[9px] text-slate-400 font-semibold">2 months ago</span>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed font-medium italic">
-                  "Excellent pet sitter! Bella and Rocky absolutely loved her. Highly recommend to anyone seeking peaceful pet care."
-                </p>
+                <span className="text-[10px] text-[#9A9188] font-medium">2 months ago</span>
               </div>
+              <p className="text-[12px] text-[#5A5550] leading-[1.6]">Excellent pet sitter! Highly recommend to anyone seeking peaceful pet care.</p>
             </div>
           </div>
 
-          {/* Send Message visual box */}
-          <div className="bg-[#111c1e] text-white p-5 rounded-2xl shadow-sm text-center space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider">Send a Message</h4>
-            <p className="text-[11px] text-slate-300">Want to book {profile.fullName.split(' ')[0]}? Send a direct message to discuss your needs.</p>
-            <button className="w-full bg-[#5c7a6b] hover:bg-[#4d6659] text-white py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-colors">
-              <MessageSquare size={13} /> Message Now
+          {/* Message button */}
+          <div className="flex justify-center pb-2">
+            <button className="bg-[#2D2926] text-white px-12 py-3 rounded-xl font-bold text-[13px] shadow-md">
+              Message {profile.fullName.split(' ')[0]}
             </button>
-          </div>
-
-          {/* Verifications panel list */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-4">
-            <div className="flex items-center gap-2 border-b border-slate-50 pb-2 text-slate-800">
-              <Shield size={15} className="text-[#6B7A5F]" />
-              <h4 className="text-xs font-bold uppercase tracking-wider">Verifications</h4>
-            </div>
-
-            <div className="space-y-2">
-              {[
-                { id: 'idVerified', label: 'ID Verified' },
-                { id: 'addressVerified', label: 'Address Verified' },
-                { id: 'policeClearance', label: 'Police Clearance' }
-              ].map((v) => {
-                const isCheck = profile[v.id as keyof typeof profile] as boolean;
-                return (
-                  <div key={v.id} className="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-100/50 rounded-xl">
-                    <span className="text-xs font-bold text-slate-700">{v.label}</span>
-                    <div className={cn(
-                      "w-4 h-4 rounded-full flex items-center justify-center text-white",
-                      isCheck ? "bg-emerald-500" : "bg-slate-200"
-                    )}>
-                      <Check size={10} strokeWidth={3} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            
-            <div className="pt-2 flex items-center gap-1.5 text-[9px] font-extrabold text-[#6B7A5F] uppercase tracking-wider">
-              <span>🏆 Top Rated Sitter</span>
-            </div>
           </div>
 
         </div>
