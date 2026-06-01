@@ -31,7 +31,7 @@ const PricingBlocks = () => {
                         className="bg-[#E9D3C5] p-10 md:p-14 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] transition-all text-center flex flex-col justify-start min-h-[350px] relative"
                     >
                         <div className="h-[40px] flex items-center justify-center mb-8">
-                            <div className="inline-block text-[11px] font-bold text-[#1a2e35] uppercase tracking-[0.2em]">
+                            <div className="inline-block bg-[#8b8b4e] text-white text-[12px] font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-lg">
                                 Flexible
                             </div>
                         </div>
@@ -41,7 +41,7 @@ const PricingBlocks = () => {
                             <span className="text-[#1a2e35] text-xl">/mo</span>
                         </div>
                         <div className="mt-6 border-b border-[#d4bead] pb-6 mb-6 flex flex-col justify-start h-[84px]">
-                            <p className="text-[#1a2e35] font-medium text-lg italic">
+                            <p className="text-[#1a2e35] font-medium text-lg ">
                                 Pay as you go, cancel anytime.
                             </p>
                         </div>
