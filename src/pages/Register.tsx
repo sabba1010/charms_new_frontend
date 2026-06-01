@@ -14,7 +14,40 @@ const Register: React.FC = () => {
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isVerifiedClicked, setIsVerifiedClicked] = useState(false);
+  const [verificationReport, setVerificationReport] = useState('');
+  const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
+      const response = await fetch(`${apiUrl}/upload/public`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'File upload failed');
+      }
+
+      setVerificationReport(data.fileUrl);
+    } catch (err: any) {
+      setError(err.message || 'Error uploading verification report');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +56,11 @@ const Register: React.FC = () => {
 
     if (!username || !email || !password || !firstName || !lastName) {
       setError('Please fill in all the fields.');
+      return;
+    }
+
+    if (isVerifiedClicked && !verificationReport) {
+      setError('Please upload the verification report before registering.');
       return;
     }
 
@@ -40,6 +78,7 @@ const Register: React.FC = () => {
           firstName,
           lastName,
           role, // 'owner' or 'sitter'
+          verificationReport,
         }),
       });
 
@@ -203,6 +242,48 @@ const Register: React.FC = () => {
                   className="w-full pl-12 pr-6 py-4 bg-white border border-slate-400 rounded-md outline-none focus:border-slate-900 transition-all duration-300 text-slate-800 placeholder:text-slate-300 text-sm"
                 />
               </div>
+            </div>
+ 
+            {/* Verification Section */}
+            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4 mt-6">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Verification</h4>
+                  <p className="text-[11px] text-slate-500 mt-1">Get verified on backgroundcheck.co.za to obtain your report.</p>
+                </div>
+                <a
+                  href="https://www.backgroundcheck.co.za"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsVerifiedClicked(true)}
+                  className="bg-[#5A7E49] text-white text-[11px] font-bold px-4 py-2 rounded-lg text-center hover:bg-[#4C7A34] transition-all shadow-sm shrink-0"
+                >
+                  Get Verified
+                </a>
+              </div>
+
+              {/* Upload Field - Conditionally Rendered */}
+              {isVerifiedClicked && (
+                <div className="space-y-1.5 pt-3 border-t border-slate-200/60">
+                  <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
+                    <span>Upload Verification Report</span>
+                    <span className="text-red-500 font-bold">* (Required)</span>
+                  </label>
+                  <input
+                    type="file"
+                    required
+                    onChange={handleFileUpload}
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    className="w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#EAF0E5] file:text-[#5A7E49] hover:file:bg-[#DDE8D6] cursor-pointer"
+                  />
+                  {uploading && <p className="text-[10px] text-slate-400">Uploading report...</p>}
+                  {verificationReport && (
+                    <p className="text-[10px] text-[#5A7E49] font-semibold flex items-center gap-1">
+                      ✓ Report uploaded successfully
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Privacy Policy Checkbox */}
