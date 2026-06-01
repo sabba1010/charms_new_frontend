@@ -14,22 +14,22 @@ const SITTER = {
   name: 'Lisa Jacobs',
   location: 'Cape Town',
   avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&h=200&fit=crop',
-  cover:  'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=800&fit=crop',
+  cover: 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=800&fit=crop',
   lastActive: '2 hours ago',
   rating: 4.8,
   reviewsCount: 26,
   verifications: ['ID Verified', 'Address Verified', 'Police Clearance'],
   services: [
     { label: 'Pet Sitting', price: 'R200/day', icon: <PawPrint size={30} /> },
-    { label: 'Dog Walking', price: 'R150/hr',  icon: <Dog       size={30} /> },
+    { label: 'Dog Walking', price: 'R150/hr', icon: <Dog size={30} /> },
   ],
   about: "Experienced pet and house sitter with a love for animals. Offering trustworthy care for your pets and home while you're away. Passionate about giving your furry friends lots of love and attention!",
   availability: {
     dates: [20, 21, 22, 24, 25, 26, 23, 28, 29, 30],
     rows: [
-      { day: 'Tor', slots: [true,  true,  false, true,  false, true,  false, true,  false, false] },
-      { day: 'Sat', slots: [true,  true,  false, true,  true,  false, true,  true,  false, false] },
-      { day: 'Sun', slots: [true,  true,  false, false, false, false, false, false, false, false] },
+      { day: 'Tor', slots: [true, true, false, true, false, true, false, true, false, false] },
+      { day: 'Sat', slots: [true, true, false, true, true, false, true, true, false, false] },
+      { day: 'Sun', slots: [true, true, false, false, false, false, false, false, false, false] },
     ],
   },
   reviews: [
@@ -56,7 +56,7 @@ const SITTER = {
 
 const StarRow = ({ rating, size = 13 }: { rating: number; size?: number }) => (
   <div className="flex items-center gap-0.5">
-    {[1,2,3,4,5].map(s => (
+    {[1, 2, 3, 4, 5].map(s => (
       <Star key={s} size={size}
         className={s <= Math.round(rating) ? 'fill-[#C9A567] text-[#C9A567]' : 'fill-[#E8E2D8] text-[#E8E2D8]'}
         strokeWidth={0}
@@ -153,7 +153,7 @@ const SitterProfile = () => {
 
           {/* Message button */}
           <button className="w-full bg-[#2D2926] hover:bg-black text-white py-3.5 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 shadow-md transition-all">
-            <MessageCircle size={16} /> Message {firstName}
+            Message {firstName}
           </button>
         </div>
       </div>
@@ -237,7 +237,7 @@ const SitterProfile = () => {
             {/* Message button */}
             <div className="flex justify-center pb-4">
               <button className="bg-[#2D2926] hover:bg-black text-white px-16 py-3.5 rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 shadow-md transition-all">
-                <MessageCircle size={17} /> Message {firstName}
+                Message {firstName}
               </button>
             </div>
           </div>
@@ -265,10 +265,10 @@ const VerifiedBanner = ({ sitter }: { sitter: typeof SITTER }) => (
     <div className="flex flex-wrap gap-4">
       {sitter.verifications.map((v, i) => (
         <div key={i} className="flex items-center gap-3 bg-[#FAF8F5] border border-[#E8E2D8] rounded-[12px] px-4 py-2.5">
-          <img 
-            src={VERIFICATION_LOGOS[i]} 
-            alt={v} 
-            className="w-[40px] h-[40px] object-contain drop-shadow-sm" 
+          <img
+            src={VERIFICATION_LOGOS[i]}
+            alt={v}
+            className="w-[40px] h-[40px] object-contain drop-shadow-sm"
           />
           <span className="text-[15px] font-bold text-[#1B365D]">{v}</span>
         </div>
