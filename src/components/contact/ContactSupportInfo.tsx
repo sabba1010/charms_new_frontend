@@ -21,8 +21,8 @@ const supportSteps = [
     description: "We do not get involved in disputes between users. We ask that all members communicate openly and resolve issues amicably amongst themselves.",
     icon: icon2,
     customWidth: "auto",
-    customHeight: "55px",
-    translateY: "5px"
+    customHeight: "70px",
+    translateY: "12px"
   },
   {
     number: "3",
