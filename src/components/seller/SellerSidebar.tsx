@@ -71,7 +71,7 @@ const SellerSidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, bookin
             { id: 'bookings-cancelled', name: 'Cancelled', count: bookingCounts?.cancelled, countBg: 'bg-[#d9534f]' },
           ]
         },
-        { id: 'add-listing', name: 'Add Listing', icon: <PlusCircle size={18} /> },
+        // { id: 'add-listing', name: 'Add Listing', icon: <PlusCircle size={18} /> },
         {
           id: 'my-listings',
           name: 'My Listings',

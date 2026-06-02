@@ -214,7 +214,7 @@ const AdminAllUsersSection: React.FC = () => {
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
                             <p className="font-bold text-slate-900">
-                              {user.firstName} {user.lastName}
+                              {user.firstName} {user.lastName} <span className="text-slate-400 font-normal ml-1">@{user.username}</span>
                             </p>
                             <span className={cn('text-[10px] font-bold uppercase px-2 py-0.5 rounded-full', roleBadge(user.role))}>
                               {user.role}

@@ -200,7 +200,7 @@ const Navbar = () => {
               </div>
 
               {/* Add Listing Button */}
-              {isSeller && (
+              {/* {isSeller && (
                 <Link
                   to="/seller-dashboard?tab=add-listing"
                   className="hidden md:flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-full text-[14px] font-medium transition-all border border-white/20 shadow-lg active:scale-95"
@@ -208,7 +208,7 @@ const Navbar = () => {
                   <span>Add Listing</span>
                   <PlusCircle className="w-4 h-4" />
                 </Link>
-              )}
+              )} */}
             </div>
           ) : (
             <Link

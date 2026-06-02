@@ -25,6 +25,10 @@ import logo from '../assets/logo/OPPAS LOGO (1).png';
 const SellerDashboard: React.FC = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isUnderReview, setIsUnderReview] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
+  const [checkingStatus, setCheckingStatus] = useState(true);
   const { counts } = useSitterBookings();
 
   useEffect(() => {
@@ -32,6 +36,37 @@ const SellerDashboard: React.FC = () => {
     const tab = params.get('tab');
     if (tab) setActiveTab(tab);
   }, [location]);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
+        const res = await fetch(`${apiUrl}/listings/my-listings`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && data.data && data.data.length > 0) {
+          const hasPending = data.data.some((l: any) => l.status === 'Pending');
+          const hasActive = data.data.some((l: any) => l.status === 'Active');
+          const rejectedListings = data.data.filter((l: any) => l.status === 'Rejected');
+          
+          if (hasPending && !hasActive) {
+            setIsUnderReview(true);
+          } else if (rejectedListings.length > 0 && !hasActive && !hasPending) {
+            setIsRejected(true);
+            setRejectionReason(rejectedListings[0].rejectionReason || 'Your documents or profile did not meet our requirements.');
+          }
+        }
+      } catch (e) {
+        console.error('Failed to check review status', e);
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+    checkStatus();
+  }, []);
 
   const getPageTitle = () => {
     switch (activeTab) {
@@ -56,12 +91,49 @@ const SellerDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] flex pt-[72px]">
-      {/* Sidebar */}
-      <SellerSidebar activeTab={activeTab} setActiveTab={setActiveTab} bookingCounts={counts} />
+    <div className="min-h-screen bg-[#fcfcfc] flex pt-[72px] relative">
+      {isUnderReview && !checkingStatus && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center backdrop-blur-md bg-white/40">
+          <div className="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 text-center max-w-md mx-4 transform transition-all">
+            <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-amber-100">
+              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-[24px] font-bold text-slate-800 mb-4 font-serif">Under Review</h2>
+            <p className="text-slate-500 text-[15px] leading-relaxed font-medium">
+              Your profile and verification documents are currently being reviewed by our team. You will gain full access once approved.
+            </p>
+          </div>
+        </div>
+      )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 ml-64 p-6 lg:p-8">
+      <div className={`flex flex-1 w-full transition-all duration-500 ${isUnderReview && !checkingStatus ? 'blur-md pointer-events-none select-none opacity-40' : ''}`}>
+        {/* Sidebar */}
+        <SellerSidebar activeTab={activeTab} setActiveTab={setActiveTab} bookingCounts={counts} />
+
+        {/* Main Content Area */}
+        <main className="flex-1 ml-64 p-6 lg:p-8">
+        {/* Rejected Alert Banner */}
+        {isRejected && (
+          <div className="mb-8 bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm flex items-start gap-4">
+            <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center shrink-0">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-[18px] font-bold text-red-800">Application Rejected</h3>
+              <p className="text-red-600 mt-1 text-[14px]">
+                Your registration was reviewed and has been rejected. Reason: <strong>{rejectionReason}</strong>
+              </p>
+              <p className="text-red-500 mt-2 text-[13px] font-medium">
+                You can review your details in "My Listings" and resubmit if necessary, or contact support for assistance.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Header & Breadcrumb */}
         <div className="flex items-center justify-between mb-12">
           <div>
@@ -160,6 +232,7 @@ const SellerDashboard: React.FC = () => {
           <p>© All Rights Reserved.</p>
         </div>
       </main>
+      </div>
     </div>
   );
 };

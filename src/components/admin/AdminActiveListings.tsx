@@ -771,6 +771,52 @@ const AdminActiveListings: React.FC<AdminActiveListingsProps> = ({ activeSubTab 
                   </div>
                 )}
 
+                {/* Verification Documents */}
+                {viewingListing.user && (viewingListing.user.verificationReport || viewingListing.user.policeVerification) && (
+                  <div className="space-y-4">
+                    <h4 className="text-[12px] font-bold text-slate-800 uppercase tracking-wider border-l-4 border-[#111c1e] pl-2">Verification Documents</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {viewingListing.user.verificationReport && (
+                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col justify-between">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center shrink-0">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                            </div>
+                            <div>
+                              <h5 className="text-[13px] font-bold text-slate-800">Identity Document</h5>
+                              <p className="text-[11px] text-slate-400 mt-0.5">Government ID, Passport, NID</p>
+                            </div>
+                          </div>
+                          <div className="mt-4 flex gap-2">
+                            <a href={getImageUrl(viewingListing.user.verificationReport)} target="_blank" rel="noreferrer" className="flex-1 bg-white border border-slate-200 text-slate-600 text-[11px] font-bold py-2 px-3 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                              Preview Document
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {viewingListing.user.policeVerification && (
+                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col justify-between">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                            </div>
+                            <div>
+                              <h5 className="text-[13px] font-bold text-slate-800">Police Clearance</h5>
+                              <p className="text-[11px] text-slate-400 mt-0.5">Background check / Police Record</p>
+                            </div>
+                          </div>
+                          <div className="mt-4 flex gap-2">
+                            <a href={getImageUrl(viewingListing.user.policeVerification)} target="_blank" rel="noreferrer" className="flex-1 bg-white border border-slate-200 text-slate-600 text-[11px] font-bold py-2 px-3 rounded-lg text-center hover:bg-slate-50 transition-colors">
+                              Preview Document
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Video Review */}
                 {(() => {
                   const isValidVideo = (url: string) => {
@@ -810,7 +856,7 @@ const AdminActiveListings: React.FC<AdminActiveListingsProps> = ({ activeSubTab 
 
               {/* Action Buttons Footer */}
               <div className="px-8 py-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 font-bold uppercase">Seller: {viewingListing.user ? `${viewingListing.user.firstName || ''} ${viewingListing.user.lastName || ''}` : 'Unknown'}</span>
+                <span className="text-[11px] text-slate-400 font-bold uppercase">Seller: {viewingListing.user ? `${viewingListing.user.firstName || ''} ${viewingListing.user.lastName || ''} (@${viewingListing.user.username || 'unknown'})` : 'Unknown'}</span>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setViewingListing(null)}

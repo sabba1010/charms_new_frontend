@@ -138,7 +138,12 @@ const InputField = ({ label, placeholder, name, type = "text", help = false, val
   </div>
 );
 
-const SellerAddListing: React.FC = () => {
+interface SellerAddListingProps {
+  isRegistrationFlow?: boolean;
+  onContinueRegistration?: (payload: any) => void;
+}
+
+const SellerAddListing: React.FC<SellerAddListingProps> = ({ isRegistrationFlow = false, onContinueRegistration }) => {
   const [step, setStep] = useState(1);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<string>('basic');
@@ -229,11 +234,15 @@ const SellerAddListing: React.FC = () => {
       const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
       setUploadProgress(30);
 
-      const response = await fetch(`${apiUrl}/upload`, {
+      const uploadUrl = token ? `${apiUrl}/upload` : `${apiUrl}/upload/public`;
+      const headers: any = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(uploadUrl, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: formDataUpload
       });
 
@@ -289,11 +298,15 @@ const SellerAddListing: React.FC = () => {
         const formDataUpload = new FormData();
         formDataUpload.append('file', file);
 
-        const response = await fetch(`${apiUrl}/upload`, {
+        const uploadUrl = token ? `${apiUrl}/upload` : `${apiUrl}/upload/public`;
+        const headers: any = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(uploadUrl, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
+          headers,
           body: formDataUpload
         });
 
@@ -340,11 +353,15 @@ const SellerAddListing: React.FC = () => {
       formDataUpload.append('file', file);
 
       const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
-      const response = await fetch(`${apiUrl}/upload`, {
+      const uploadUrl = token ? `${apiUrl}/upload` : `${apiUrl}/upload/public`;
+      const headers: any = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(uploadUrl, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: formDataUpload
       });
 
@@ -412,7 +429,7 @@ const SellerAddListing: React.FC = () => {
     setSubmitError('');
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
+      if (!isRegistrationFlow && !token) {
         throw new Error('Please login to create a listing');
       }
 
@@ -456,6 +473,12 @@ const SellerAddListing: React.FC = () => {
         openingHours: enableOpeningHours ? openingHours : [],
       };
 
+      if (isRegistrationFlow && onContinueRegistration) {
+        onContinueRegistration(payload);
+        setIsSubmitting(false);
+        return;
+      }
+
       const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
       const response = await fetch(`${apiUrl}/listings`, {
         method: 'POST',
@@ -477,7 +500,7 @@ const SellerAddListing: React.FC = () => {
         icon: 'success',
         confirmButtonColor: '#111c1e'
       }).then(() => {
-        window.location.reload();
+        window.location.href = '/seller-dashboard';
       });
     } catch (err: any) {
       console.error(err);
@@ -552,7 +575,7 @@ const SellerAddListing: React.FC = () => {
             );
           })}
         </div>
-        <div className="flex justify-center pt-6"><button onClick={() => setStep(3)} className="bg-[#111c1e] text-white px-8 py-3 rounded-full text-[13px] font-bold flex items-center gap-3 hover:bg-[#1a2e35] transition-all group shadow-lg">Submit Listing <ArrowRightCircle size={18} className="group-hover:translate-x-1 transition-transform" /></button></div>
+        <div className="flex justify-center pt-6"><button onClick={() => setStep(3)} className="bg-[#111c1e] text-white px-8 py-3 rounded-full text-[13px] font-bold flex items-center gap-3 hover:bg-[#1a2e35] transition-all group shadow-lg">{isRegistrationFlow ? 'Next Step' : 'Submit Listing'} <ArrowRightCircle size={18} className="group-hover:translate-x-1 transition-transform" /></button></div>
       </div>
     );
   }
@@ -1107,9 +1130,13 @@ const SellerAddListing: React.FC = () => {
         <button
           onClick={handlePublish}
           disabled={isSubmitting}
-          className="bg-[#111c1e] text-white px-8 py-2.5 rounded text-[13px] font-bold flex items-center gap-2 hover:bg-[#1a2e35] transition-all group disabled:opacity-50"
+          className="bg-[#111c1e] text-white px-10 py-3.5 rounded-full text-[14px] font-bold flex items-center gap-3 hover:bg-[#1a2e35] transition-all group shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'Publishing...' : 'Publish Listing'}
+          {isSubmitting ? (
+            <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+          ) : (
+            <>{isRegistrationFlow ? 'Next Step' : 'Publish Listing'} <ArrowRightCircle size={20} className="group-hover:translate-x-1 transition-transform" /></>
+          )}
         </button>
       </div>
     </div>

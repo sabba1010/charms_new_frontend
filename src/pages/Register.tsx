@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, UserCircle, Briefcase, Pencil, Eye, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
+import SellerAddListing from '../components/seller/SellerAddListing';
 
 const Register: React.FC = () => {
   const [role, setRole] = useState<'owner' | 'sitter'>('sitter');
@@ -17,6 +18,10 @@ const Register: React.FC = () => {
   const [isVerifiedClicked, setIsVerifiedClicked] = useState(false);
   const [verificationReport, setVerificationReport] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [policeVerification, setPoliceVerification] = useState('');
+  const [uploadingPolice, setUploadingPolice] = useState(false);
+  const [registrationStep, setRegistrationStep] = useState(1);
+  const [listingPayload, setListingPayload] = useState<any>(null);
   const navigate = useNavigate();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,15 +54,61 @@ const Register: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePoliceUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingPolice(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
+      const response = await fetch(`${apiUrl}/upload/public`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'File upload failed');
+      }
+
+      setPoliceVerification(data.fileUrl);
+    } catch (err: any) {
+      setError(err.message || 'Error uploading police verification');
+    } finally {
+      setUploadingPolice(false);
+    }
+  };
+
+  const handleNextStep1 = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
-
+    
     if (!username || !email || !password || !firstName || !lastName) {
       setError('Please fill in all the fields.');
       return;
     }
+
+    if (role === 'sitter') {
+      setRegistrationStep(2);
+    } else {
+      setRegistrationStep(3);
+    }
+  };
+
+  const handleContinueFromListing = (payload: any) => {
+    setListingPayload(payload);
+    setRegistrationStep(3);
+  };
+
+  const handleFinalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
     if (isVerifiedClicked && !verificationReport) {
       setError('Please upload the verification report before registering.');
@@ -66,6 +117,8 @@ const Register: React.FC = () => {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
+      
+      // 1. Register User
       const response = await fetch(`${apiUrl}/auth/register`, {
         method: 'POST',
         headers: {
@@ -79,6 +132,7 @@ const Register: React.FC = () => {
           lastName,
           role, // 'owner' or 'sitter'
           verificationReport,
+          policeVerification,
         }),
       });
 
@@ -87,8 +141,6 @@ const Register: React.FC = () => {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Registration failed.');
       }
-
-      setSuccess('Account created successfully! Redirecting...');
 
       // Store credentials and sign in automatically
       localStorage.removeItem('isAdmin');
@@ -99,11 +151,31 @@ const Register: React.FC = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
+      // 2. If sitter and listing payload exists, create listing
       if (data.user.role === 'sitter') {
         localStorage.setItem('isSeller', 'true');
+        
+        if (listingPayload) {
+          setSuccess('Account created! Setting up your listing...');
+          const listingResponse = await fetch(`${apiUrl}/listings`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${data.token}`
+            },
+            body: JSON.stringify(listingPayload)
+          });
+          
+          if (!listingResponse.ok) {
+            console.error('Failed to create listing automatically');
+          }
+        }
+        
+        setSuccess('Registration complete! Redirecting...');
         setTimeout(() => navigate('/seller-dashboard'), 1500);
       } else {
         localStorage.setItem('isOwner', 'true');
+        setSuccess('Registration complete! Redirecting...');
         setTimeout(() => navigate('/dashboard'), 1500);
       }
     } catch (err: any) {
@@ -125,7 +197,8 @@ const Register: React.FC = () => {
         </div>
 
         {/* Registration Form Container */}
-        <div className="max-w-[540px] mx-auto">
+        {registrationStep === 1 ? (
+          <div className="max-w-[540px] mx-auto">
           {/* Tabs */}
           <div className="flex gap-10 border-b border-slate-100 mb-10">
             <Link to="/login" className="pb-4 text-sm font-medium text-slate-400 hover:text-slate-600 transition-all">
@@ -148,7 +221,7 @@ const Register: React.FC = () => {
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleNextStep1}>
             {/* Role Selection */}
             <div className="grid grid-cols-2 gap-4 mb-10">
               <button
@@ -244,7 +317,43 @@ const Register: React.FC = () => {
               </div>
             </div>
  
-            {/* Verification Section */}
+            {/* Next Button */}
+            <div className="pt-8 text-left">
+              <button
+                type="submit"
+                className="bg-[#0F172A] text-white px-10 py-3.5 rounded-full font-bold text-xs hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] uppercase tracking-wider"
+              >
+                Next
+              </button>
+            </div>
+          </form>
+        </div>
+        ) : registrationStep === 2 ? (
+          <div className="w-full animate-in fade-in zoom-in duration-500">
+            <SellerAddListing isRegistrationFlow={true} onContinueRegistration={handleContinueFromListing} />
+          </div>
+        ) : (
+          <div className="max-w-[540px] mx-auto animate-in slide-in-from-right duration-500">
+            {/* Tabs */}
+            <div className="flex gap-10 border-b border-slate-100 mb-10">
+              <button className="pb-4 text-sm font-bold text-slate-900 border-b-2 border-slate-900 -mb-[2px] transition-all">
+                Final Step: Verification
+              </button>
+            </div>
+
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-xs rounded-md">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-100 text-green-600 text-xs rounded-md">
+                {success}
+              </div>
+            )}
+
+            <form onSubmit={handleFinalSubmit} className="space-y-5">
             <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4 mt-6">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
@@ -286,6 +395,35 @@ const Register: React.FC = () => {
               )}
             </div>
 
+            {/* Police Verification Section */}
+            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4 mt-6">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Police Clearance</h4>
+                  <p className="text-[11px] text-slate-500 mt-1">Upload your police clearance certificate.</p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pt-3 border-t border-slate-200/60">
+                <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
+                  <span>Upload Police Verification</span>
+                  <span className="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <input
+                  type="file"
+                  onChange={handlePoliceUpload}
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  className="w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer"
+                />
+                {uploadingPolice && <p className="text-[10px] text-slate-400">Uploading file...</p>}
+                {policeVerification && (
+                  <p className="text-[10px] text-slate-600 font-semibold flex items-center gap-1">
+                    ✓ Police verification uploaded successfully
+                  </p>
+                )}
+              </div>
+            </div>
+
             {/* Privacy Policy Checkbox */}
             <div className="flex items-center gap-3 pt-4">
               <input
@@ -300,7 +438,14 @@ const Register: React.FC = () => {
             </div>
 
             {/* Register Button */}
-            <div className="pt-8 text-left">
+            <div className="pt-8 flex gap-4">
+              <button
+                type="button"
+                onClick={() => setRegistrationStep(role === 'sitter' ? 2 : 1)}
+                className="bg-white border border-slate-200 text-slate-600 px-8 py-3.5 rounded-full font-bold text-xs hover:bg-slate-50 transition-all shadow-sm active:scale-[0.98] uppercase tracking-wider"
+              >
+                Back
+              </button>
               <button
                 type="submit"
                 className="bg-[#0F172A] text-white px-10 py-3.5 rounded-full font-bold text-xs hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98] uppercase tracking-wider"
@@ -310,6 +455,7 @@ const Register: React.FC = () => {
             </div>
           </form>
         </div>
+        )}
       </div>
     </div>
   );
