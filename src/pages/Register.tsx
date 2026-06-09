@@ -396,33 +396,35 @@ const Register: React.FC = () => {
             </div>
 
             {/* Police Verification Section */}
-            <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4 mt-6">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                <div>
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Police Clearance</h4>
-                  <p className="text-[11px] text-slate-500 mt-1">Upload your police clearance certificate.</p>
+            {role === 'sitter' && (
+              <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4 mt-6">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Police Clearance</h4>
+                    <p className="text-[11px] text-slate-500 mt-1">Upload your police clearance certificate.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 pt-3 border-t border-slate-200/60">
+                  <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
+                    <span>Upload Police Verification</span>
+                    <span className="text-slate-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="file"
+                    onChange={handlePoliceUpload}
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    className="w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer"
+                  />
+                  {uploadingPolice && <p className="text-[10px] text-slate-400">Uploading file...</p>}
+                  {policeVerification && (
+                    <p className="text-[10px] text-slate-600 font-semibold flex items-center gap-1">
+                      ✓ Police verification uploaded successfully
+                    </p>
+                  )}
                 </div>
               </div>
-
-              <div className="space-y-1.5 pt-3 border-t border-slate-200/60">
-                <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
-                  <span>Upload Police Verification</span>
-                  <span className="text-slate-400 font-normal">(Optional)</span>
-                </label>
-                <input
-                  type="file"
-                  onChange={handlePoliceUpload}
-                  accept=".pdf,.png,.jpg,.jpeg"
-                  className="w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer"
-                />
-                {uploadingPolice && <p className="text-[10px] text-slate-400">Uploading file...</p>}
-                {policeVerification && (
-                  <p className="text-[10px] text-slate-600 font-semibold flex items-center gap-1">
-                    ✓ Police verification uploaded successfully
-                  </p>
-                )}
-              </div>
-            </div>
+            )}
 
             {/* Privacy Policy Checkbox */}
             <div className="flex items-center gap-3 pt-4">
