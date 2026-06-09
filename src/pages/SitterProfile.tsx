@@ -23,6 +23,7 @@ const SITTER = {
     { label: 'Pet Sitting', price: 'R200/day', icon: <PawPrint size={30} /> },
     { label: 'Dog Walking', price: 'R150/hr', icon: <Dog size={30} /> },
   ],
+  experiencesWith: ['Dogs', 'Cats', 'Puppy Care'],
   about: "Experienced pet and house sitter with a love for animals. Offering trustworthy care for your pets and home while you're away. Passionate about giving your furry friends lots of love and attention!",
   availability: {
     dates: [20, 21, 22, 24, 25, 26, 23, 28, 29, 30],
@@ -295,9 +296,24 @@ const ServicesRow = ({ sitter }: { sitter: typeof SITTER }) => (
 
 /* About section */
 const AboutSection = ({ sitter }: { sitter: typeof SITTER }) => (
-  <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm">
-    <h3 className="text-[16px] font-serif font-bold text-[#2D2926] mb-2">About Me</h3>
-    <p className="text-[13px] text-[#5A5550] leading-[1.75]">{sitter.about}</p>
+  <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm space-y-5">
+    <div>
+      <h3 className="text-[16px] font-serif font-bold text-[#2D2926] mb-2">About Me</h3>
+      <p className="text-[13px] text-[#5A5550] leading-[1.75]">{sitter.about}</p>
+    </div>
+    
+    {sitter.experiencesWith && sitter.experiencesWith.length > 0 && (
+      <div>
+        <h3 className="text-[16px] font-serif font-bold text-[#2D2926] mb-3">Experiences With</h3>
+        <div className="flex flex-wrap gap-1.5">
+          {sitter.experiencesWith.map(exp => (
+            <span key={exp} className="px-2.5 py-1 bg-[#F2F6EE] border border-[#C5D1B2] text-[#5D7050] rounded-md text-[11px] font-bold">
+              {exp}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 );
 

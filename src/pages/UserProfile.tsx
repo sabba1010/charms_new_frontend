@@ -41,9 +41,9 @@ const UserProfile = () => {
           homeFeatures: {
             nonSmoking: true,
             spaciousBackyard: true,
-            securityAlarm: true,
             homeChecks: true
-          }
+          },
+          experiencesWith: ['Dogs', 'Cats', 'Puppy Care']
         });
         setLoading(false);
         return;
@@ -96,6 +96,7 @@ const UserProfile = () => {
   const pets = user.pets && Array.isArray(user.pets) ? user.pets.map((pet: any) => ({
     name: pet.name,
     type: pet.type || 'Pet',
+    age: pet.age,
     rating: pet.rating || 5.0,
     img: pet.image || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200&h=250&fit=crop'
   })) : [];
@@ -110,6 +111,8 @@ const UserProfile = () => {
     if (user.homeFeatures.securityAlarm)    homeFeatures.push('Security alarm system and electric gate');
     if (user.homeFeatures.homeChecks)       homeFeatures.push('Basic home security checks');
   }
+
+  const experiencesWith = Array.isArray(user.experiencesWith) ? user.experiencesWith : [];
 
   // Render star rating
   const StarRating = ({ rating }: { rating: number }) => (
@@ -256,10 +259,7 @@ const UserProfile = () => {
                         </div>
                         <div className="p-2 pb-2.5">
                           <h3 className="text-[12.5px] font-bold text-[#2D2926] leading-tight">{pet.name}</h3>
-                          <p className="text-[10px] text-[#7A746B] mt-0.5 leading-tight">{pet.type}</p>
-                          <div className="mt-1.5">
-                            <StarRating rating={pet.rating} />
-                          </div>
+                          <p className="text-[10px] text-[#7A746B] mt-0.5 leading-tight">{pet.type}{pet.age ? ` · Age: ${pet.age}` : ''}</p>
                         </div>
                       </div>
                     ))}
@@ -285,6 +285,20 @@ const UserProfile = () => {
                   </div>
                 )}
               </section>
+
+              {/* Experiences With */}
+              {experiencesWith.length > 0 && (
+                <section className="mb-8">
+                  <h2 className="text-[19px] font-serif font-bold text-[#2D2926] mb-3">Experiences With</h2>
+                  <div className="flex flex-wrap gap-1.5">
+                    {experiencesWith.map((exp: string) => (
+                      <span key={exp} className="px-2.5 py-1 bg-[#F2F6EE] border border-[#C5D1B2] text-[#5D7050] rounded-md text-[11.5px] font-bold">
+                        {exp}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               {/* Message Button */}
               <div className="flex justify-center pb-2">
@@ -455,10 +469,7 @@ const UserProfile = () => {
                         </div>
                         <div className="p-3 pb-4">
                           <h3 className="text-[15px] font-bold text-[#2D2926]">{pet.name}</h3>
-                          <p className="text-[11px] text-[#7A746B] mt-0.5">{pet.type}</p>
-                          <div className="mt-2">
-                            <StarRating rating={pet.rating} />
-                          </div>
+                          <p className="text-[11px] text-[#7A746B] mt-0.5">{pet.type}{pet.age ? ` · Age: ${pet.age}` : ''}</p>
                         </div>
                       </div>
                     ))}
@@ -484,6 +495,20 @@ const UserProfile = () => {
                   </div>
                 )}
               </section>
+
+              {/* Experiences With */}
+              {experiencesWith.length > 0 && (
+                <section>
+                  <h2 className="text-[22px] font-serif font-bold text-[#2D2926] mb-4">Experiences With</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {experiencesWith.map((exp: string) => (
+                      <span key={exp} className="px-3 py-1.5 bg-[#F2F6EE] border border-[#C5D1B2] text-[#5D7050] rounded-md text-[13px] font-bold">
+                        {exp}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               {/* Message Button */}
               <div className="flex justify-center pt-2">

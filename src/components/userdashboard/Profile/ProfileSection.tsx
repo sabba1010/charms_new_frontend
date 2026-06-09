@@ -21,6 +21,14 @@ const DEFAULT_HOME_FEATURES = [
   'Basic home security checks',
 ];
 
+const EXPERIENCES_OPTIONS = [
+  'Dogs', 'Cats', 'Birds', 'Fish', 'Rabbits', 'Guinea Pigs', 'Reptiles', 'Horses',
+  'Farm Animals', 'Livestock', 'Poultry', 'Puppy Care', 'Senior Pets', 'Rescue Animals',
+  'Medication Administration', 'Disabled Pets', 'Large Breed Dogs', 'Multiple Pet Households',
+  'Breeding Kennels', 'Whelping & Puppy Care', 'Farm Management Assistance', 'Small Holdings',
+  'Farms', 'Holiday Homes', 'Security Presence While Away', 'Garden & Plant Care', 'Pool Maintenance Checks'
+];
+
 const inputCls =
   'w-full px-4 py-2.5 rounded-lg border border-[#E8E2D8] bg-white text-[13px] text-[#4A4743] focus:border-[#788564] focus:ring-2 focus:ring-[#788564]/10 outline-none transition-all placeholder:text-[#C5BEB4]';
 
@@ -58,6 +66,8 @@ const ProfileSection = () => {
   const [newFeature,   setNewFeature]   = useState('');
   const [editingIdx,   setEditingIdx]   = useState<number | null>(null);
   const [editingText,  setEditingText]  = useState('');
+
+  const [experiencesWith, setExperiencesWith] = useState<string[]>([]);
 
   const [pets,   setPets]   = useState<Pet[]>([]);
   const [newPet, setNewPet] = useState({ name: '', type: 'Dog', age: '', image: '', rating: 5.0 });
@@ -98,6 +108,9 @@ const ProfileSection = () => {
           }
           if (u.pets && Array.isArray(u.pets)) {
             setPets(u.pets.map((p: any, i: number) => ({ id: i + 1, ...p })));
+          }
+          if (u.experiencesWith && Array.isArray(u.experiencesWith)) {
+            setExperiencesWith(u.experiencesWith);
           }
         }
       } catch (e) { console.error(e); }
@@ -171,7 +184,7 @@ const ProfileSection = () => {
       const res   = await fetch(`${apiUrl}/auth/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ...profile, homeFeatures, pets: pets.map(({ id, ...r }) => r) }),
+        body: JSON.stringify({ ...profile, homeFeatures, experiencesWith, pets: pets.map(({ id, ...r }) => r) }),
       });
       const data = await res.json();
       if (data.success) { setSuccessMsg('Profile saved!'); setTimeout(() => setSuccessMsg(''), 3000); }
@@ -400,7 +413,7 @@ const ProfileSection = () => {
                     </div>
                     <div className="p-2">
                       <p className="text-[12px] font-bold text-[#2D2926] truncate">{pet.name}</p>
-                      <p className="text-[10px] text-[#9A9188] truncate">{pet.type}{pet.age ? ` · ${pet.age}` : ''}</p>
+                      <p className="text-[10px] text-[#9A9188] truncate">{pet.type}{pet.age ? ` · Age: ${pet.age}` : ''}</p>
                     </div>
                     <button
                       onClick={() => deletePet(pet.id)}
@@ -445,6 +458,31 @@ const ProfileSection = () => {
               >
                 <Plus size={14} /> Add Pet
               </button>
+            </div>
+          </div>
+
+          {/* Experiences With */}
+          <div className="bg-white rounded-2xl border border-[#EEE8DC] p-6 space-y-4">
+            <h3 className="text-[13px] font-bold text-[#2D2926] border-b border-[#F0EAE0] pb-2">Experiences With</h3>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {EXPERIENCES_OPTIONS.map(exp => (
+                <button
+                  key={exp}
+                  onClick={() => {
+                    setExperiencesWith(prev => 
+                      prev.includes(exp) ? prev.filter(x => x !== exp) : [...prev, exp]
+                    );
+                  }}
+                  className={`px-3 py-1.5 rounded-full border text-[11px] font-medium transition-all ${
+                    experiencesWith.includes(exp) 
+                      ? 'bg-[#788564] border-[#788564] text-white shadow-sm'
+                      : 'border-[#E8E2D8] bg-white text-[#5A5550] hover:border-[#788564] hover:text-[#788564]'
+                  }`}
+                >
+                  {experiencesWith.includes(exp) && <Check size={10} className="inline-block mr-1 -mt-0.5" />}
+                  {exp}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -560,8 +598,7 @@ const ProfileSection = () => {
                           </div>
                           <div className="p-1.5">
                             <p className="text-[11px] font-bold text-[#2D2926] truncate">{pet.name}</p>
-                            <p className="text-[9px] text-[#9A9188] truncate">{pet.type}</p>
-                            <StarRow rating={pet.rating} />
+                            <p className="text-[9px] text-[#9A9188] truncate">{pet.type}{pet.age ? ` · Age: ${pet.age}` : ''}</p>
                           </div>
                         </div>
                       ))}
@@ -581,6 +618,20 @@ const ProfileSection = () => {
                           </div>
                           <span className="text-[11px] text-[#4A4743] font-medium">{feat}</span>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Experiences With */}
+                {experiencesWith.length > 0 && (
+                  <div>
+                    <h4 className="text-[13px] font-serif font-bold text-[#2D2926] mb-2.5">Experiences With</h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {experiencesWith.map(exp => (
+                        <span key={exp} className="px-2.5 py-1 bg-[#F2F6EE] border border-[#C5D1B2] text-[#5D7050] rounded-md text-[10px] font-bold">
+                          {exp}
+                        </span>
                       ))}
                     </div>
                   </div>

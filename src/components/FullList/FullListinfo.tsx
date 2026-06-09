@@ -139,6 +139,7 @@ const FullListinfo = () => {
   const qKeyword = searchParams.get('keyword') || '';
   const qLocation = searchParams.get('location') || '';
   const qCategory = searchParams.get('category') || '';
+  const qExperience = searchParams.get('experience') || '';
 
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -243,6 +244,14 @@ const FullListinfo = () => {
 
         if (dist > appliedRadius) return false;
       }
+    }
+
+    // 5. Experience Filter (OR logic)
+    if (qExperience) {
+      const selectedExps = qExperience.split(',').map(e => e.trim());
+      const sitterExps = listing.user?.experiencesWith || [];
+      const hasMatch = selectedExps.some(exp => sitterExps.includes(exp));
+      if (!hasMatch) return false;
     }
 
     return true;

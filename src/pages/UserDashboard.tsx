@@ -165,12 +165,13 @@ const UserDashboard = () => {
                   <p className="text-slate-400 italic">No information available in {activeTab} yet.</p>
                 </div>
               )}
-
-            <div className="absolute bottom-8 left-8 text-[12px] text-slate-300">
-              © All Rights Reserved.
-            </div>
           </motion.div>
         </AnimatePresence>
+
+        {/* Footer */}
+        <div className="mt-20 pt-8 border-t border-slate-50 text-[13px] text-slate-400">
+          <p>© All Rights Reserved.</p>
+        </div>
       </main>
     </div>
   );

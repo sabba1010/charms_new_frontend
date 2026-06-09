@@ -9,6 +9,14 @@ import logo1 from '../../assets/png/1 (1).png';
 import logo2 from '../../assets/png/2 (1).png';
 import logo3 from '../../assets/png/3 (1).png';
 
+const EXPERIENCES_OPTIONS = [
+  'Dogs', 'Cats', 'Birds', 'Fish', 'Rabbits', 'Guinea Pigs', 'Reptiles', 'Horses',
+  'Farm Animals', 'Livestock', 'Poultry', 'Puppy Care', 'Senior Pets', 'Rescue Animals',
+  'Medication Administration', 'Disabled Pets', 'Large Breed Dogs', 'Multiple Pet Households',
+  'Breeding Kennels', 'Whelping & Puppy Care', 'Farm Management Assistance', 'Small Holdings',
+  'Farms', 'Holiday Homes', 'Security Presence While Away', 'Garden & Plant Care', 'Pool Maintenance Checks'
+];
+
 interface Service {
   id: number;
   name: string;
@@ -40,7 +48,8 @@ const SellerProfileSettings = () => {
     rating: 4.8,
     idVerified: true,
     addressVerified: true,
-    policeClearance: true
+    policeClearance: true,
+    experiencesWith: ['Dogs', 'Cats', 'Puppy Care'] as string[]
   });
 
   // 2. Services list state
@@ -300,6 +309,40 @@ const SellerProfileSettings = () => {
           </div>
         </section>
 
+        {/* Experiences With config */}
+        <section className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm space-y-6">
+          <div>
+            <h3 className="text-[16px] font-bold text-slate-900">Experiences With</h3>
+            <p className="text-xs text-slate-400 mt-1">Select the types of animals and care you have experience with.</p>
+          </div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            {EXPERIENCES_OPTIONS.map(exp => {
+              const isSelected = profile.experiencesWith.includes(exp);
+              return (
+                <button
+                  key={exp}
+                  onClick={() => {
+                    setProfile(prev => ({
+                      ...prev,
+                      experiencesWith: isSelected
+                        ? prev.experiencesWith.filter(x => x !== exp)
+                        : [...prev.experiencesWith, exp]
+                    }));
+                  }}
+                  className={`px-3 py-1.5 rounded-full border text-[11px] font-medium transition-all ${
+                    isSelected 
+                      ? 'bg-[#6B7A5F] border-[#6B7A5F] text-white shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-[#6B7A5F] hover:text-[#6B7A5F]'
+                  }`}
+                >
+                  {isSelected && <Check size={10} className="inline-block mr-1 -mt-0.5" />}
+                  {exp}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
         {/* Trust Badges config */}
         <section className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm space-y-6">
           <div>
@@ -447,6 +490,20 @@ const SellerProfileSettings = () => {
             <h3 className="text-[15px] font-serif font-bold text-[#2D2926] mb-2">About Me</h3>
             <p className="text-[12px] text-[#5A5550] leading-[1.75] whitespace-pre-line">{profile.bio}</p>
           </div>
+
+          {/* Experiences With Preview */}
+          {profile.experiencesWith.length > 0 && (
+            <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm">
+              <h3 className="text-[15px] font-serif font-bold text-[#2D2926] mb-4">Experiences With</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {profile.experiencesWith.map(exp => (
+                  <span key={exp} className="px-2.5 py-1 bg-[#F2F6EE] border border-[#C5D1B2] text-[#5D7050] rounded-md text-[10px] font-bold">
+                    {exp}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Availability Grid */}
           <div className="bg-white rounded-2xl border border-[#EEE8DC] p-5 shadow-sm overflow-x-auto">

@@ -15,16 +15,29 @@ const CATEGORIES = [
   'Pet Taxi'
 ];
 
+const EXPERIENCES_OPTIONS = [
+  'Dogs', 'Cats', 'Birds', 'Fish', 'Rabbits', 'Guinea Pigs', 'Reptiles', 'Horses',
+  'Farm Animals', 'Livestock', 'Poultry', 'Puppy Care', 'Senior Pets', 'Rescue Animals',
+  'Medication Administration', 'Disabled Pets', 'Large Breed Dogs', 'Multiple Pet Households',
+  'Breeding Kennels', 'Whelping & Puppy Care', 'Farm Management Assistance', 'Small Holdings',
+  'Farms', 'Holiday Homes', 'Security Presence While Away', 'Garden & Plant Care', 'Pool Maintenance Checks'
+];
+
 const Hero = () => {
   const navigate = useNavigate();
   const [location, setLocation] = useState('');
   const [category, setCategory] = useState('All Categories');
+  const [selectedExperiences, setSelectedExperiences] = useState<string[]>([]);
   
   const [catOpenMobile, setCatOpenMobile] = useState(false);
   const [catOpenDesktop, setCatOpenDesktop] = useState(false);
+  const [expOpenMobile, setExpOpenMobile] = useState(false);
+  const [expOpenDesktop, setExpOpenDesktop] = useState(false);
   const [catSearch, setCatSearch] = useState('');
   const catRefMobile = useRef<HTMLDivElement>(null);
   const catRefDesktop = useRef<HTMLDivElement>(null);
+  const expRefMobile = useRef<HTMLDivElement>(null);
+  const expRefDesktop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -33,6 +46,12 @@ const Hero = () => {
       }
       if (catRefDesktop.current && !catRefDesktop.current.contains(e.target as Node)) {
         setCatOpenDesktop(false);
+      }
+      if (expRefMobile.current && !expRefMobile.current.contains(e.target as Node)) {
+        setExpOpenMobile(false);
+      }
+      if (expRefDesktop.current && !expRefDesktop.current.contains(e.target as Node)) {
+        setExpOpenDesktop(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -54,6 +73,7 @@ const Hero = () => {
     const params = new URLSearchParams();
     if (location.trim()) params.append('location', location.trim());
     if (category && category !== 'All Categories') params.append('category', category);
+    if (selectedExperiences.length > 0) params.append('experience', selectedExperiences.join(','));
     navigate(`/listings?${params.toString()}`);
   };
 
@@ -158,6 +178,42 @@ const Hero = () => {
                 </div>
               )}
             </div>
+
+            {/* Experience */}
+            <div className="bg-white rounded w-full relative" ref={expRefMobile}>
+              <button
+                onClick={() => setExpOpenMobile(!expOpenMobile)}
+                className="w-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                <span className={selectedExperiences.length > 0 ? 'text-slate-700 font-medium truncate' : ''}>
+                  {selectedExperiences.length > 0 ? `${selectedExperiences.length} Experiences` : 'Experiences With'}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${expOpenMobile ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {expOpenMobile && (
+                <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2 max-h-60 overflow-y-auto">
+                  {EXPERIENCES_OPTIONS.map(exp => (
+                    <label key={exp} className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                      <input 
+                        type="checkbox"
+                        checked={selectedExperiences.includes(exp)}
+                        onChange={() => {
+                          setSelectedExperiences(prev => 
+                            prev.includes(exp) ? prev.filter(x => x !== exp) : [...prev, exp]
+                          );
+                        }}
+                        className="mr-3"
+                      />
+                      <span className="text-sm text-gray-700">{exp}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Search Button */}
             <button
               onClick={handleSearch}
@@ -228,6 +284,41 @@ const Hero = () => {
                         <p className="px-5 py-3 text-sm text-gray-400">No categories found</p>
                       )}
                     </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-[1] flex items-center justify-between gap-2 text-slate-500 relative" ref={expRefDesktop}>
+                <button
+                  onClick={() => setExpOpenDesktop(!expOpenDesktop)}
+                  className="w-full h-full flex items-center justify-between px-4 py-3 text-[15px] text-slate-500 hover:text-slate-700 transition-colors border-l border-gray-200"
+                >
+                  <span className={selectedExperiences.length > 0 ? 'text-slate-700 font-medium truncate' : 'truncate'}>
+                    {selectedExperiences.length > 0 ? `${selectedExperiences.length} Experiences` : 'Experiences With'}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 flex-shrink-0 ml-2 transition-transform duration-200 ${expOpenDesktop ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {expOpenDesktop && (
+                  <div className="absolute top-full mt-2 left-0 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[2000] py-2 max-h-80 overflow-y-auto">
+                    <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase">Select Experiences</div>
+                    {EXPERIENCES_OPTIONS.map(exp => (
+                      <label key={exp} className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                        <input 
+                          type="checkbox"
+                          checked={selectedExperiences.includes(exp)}
+                          onChange={() => {
+                            setSelectedExperiences(prev => 
+                              prev.includes(exp) ? prev.filter(x => x !== exp) : [...prev, exp]
+                            );
+                          }}
+                          className="mr-3"
+                        />
+                        <span className="text-sm text-gray-700">{exp}</span>
+                      </label>
+                    ))}
                   </div>
                 )}
               </div>
