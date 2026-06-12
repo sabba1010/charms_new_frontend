@@ -42,18 +42,32 @@ const listingTypes = [
 const packages = [
   {
     id: 'monthly',
-    name: 'Monthly',
-    description: 'Monthly subscription for unlimited listings and availability',
-    price: '$10.00',
-    features: ['Unlimited number of listings', 'Unlimited availability of listings', 'Edit packages in WP Admin → Products']
+    name: 'Monthly Membership',
+    description: 'Pay as you go, cancel anytime.',
+    price: 'R170/mo',
+    badge: 'FLEXIBLE',
+    features: [
+      'Unlimited access to home & pet jobs',
+      'No Booking Fees',
+      'Member support',
+      'Cancel any time',
+      'Unlimited job applications',
+    ]
   },
   {
     id: 'yearly',
-    name: 'Yearly',
-    description: 'Yearly subscription for unlimited listings and availability',
-    price: '$100.00',
-    badge: 'Best Value',
-    features: ['Unlimited number of listings', 'Unlimited availability of listings', 'Edit packages in WP Admin → Products']
+    name: 'Annual Membership',
+    description: 'The best way to build your sitting reputation.',
+    price: 'R1700/yr',
+    badge: 'SAVE 2 MONTHS',
+    features: [
+      'Unlimited access to home & pet jobs',
+      'No Booking fees',
+      'Member support',
+      'Save 2 months',
+      'No monthly renewal or interruptions',
+      'Always stay connected to see new jobs posted',
+    ]
   },
 ];
 
