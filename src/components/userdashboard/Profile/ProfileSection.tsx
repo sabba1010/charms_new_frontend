@@ -44,7 +44,7 @@ const StarRow = ({ rating }: { rating: number }) => (
   </div>
 );
 
-const ProfileSection = () => {
+const ProfileSection = ({ onProfileCompleted }: { onProfileCompleted?: () => void } = {}) => {
   const [loading,    setLoading]    = useState(true);
   const [saving,     setSaving]     = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -187,7 +187,21 @@ const ProfileSection = () => {
         body: JSON.stringify({ ...profile, homeFeatures, experiencesWith, pets: pets.map(({ id, ...r }) => r) }),
       });
       const data = await res.json();
-      if (data.success) { setSuccessMsg('Profile saved!'); setTimeout(() => setSuccessMsg(''), 3000); }
+      if (data.success) {
+        setSuccessMsg('Profile saved!');
+        setTimeout(() => setSuccessMsg(''), 3000);
+        // Mark profile as completed on the backend if not yet done
+        if (onProfileCompleted) {
+          try {
+            await fetch(`${apiUrl}/auth/profile`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              body: JSON.stringify({ profileCompleted: true }),
+            });
+            onProfileCompleted();
+          } catch { /* ignore */ }
+        }
+      }
       else setErrorMsg(data.message || 'Save failed');
     } catch { setErrorMsg('Connection error'); }
     finally { setSaving(false); }

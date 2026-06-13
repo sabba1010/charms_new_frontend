@@ -35,7 +35,7 @@ const StarRow = ({ rating, size = 13 }: { rating: number; size?: number }) => (
   </div>
 );
 
-const SellerProfileSettings = () => {
+const SellerProfileSettings = ({ onProfileCompleted }: { onProfileCompleted?: () => void } = {}) => {
   // 1. Core Profile Details state
   const [profile, setProfile] = useState({
     fullName: 'Lisa Jacobs',
@@ -371,7 +371,24 @@ const SellerProfileSettings = () => {
 
         {/* Save */}
         <div className="flex justify-end pt-4">
-          <button className="w-full bg-[#111c1e] text-white py-3.5 rounded-full font-bold text-xs uppercase tracking-wider hover:bg-black transition-all shadow-lg active:scale-95">
+          <button
+            onClick={async () => {
+              // TODO: wire up to backend save
+              if (onProfileCompleted) {
+                try {
+                  const token = localStorage.getItem('token');
+                  const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
+                  await fetch(`${apiUrl}/auth/profile`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ profileCompleted: true }),
+                  });
+                  onProfileCompleted();
+                } catch { /* ignore */ }
+              }
+            }}
+            className="w-full bg-[#111c1e] text-white py-3.5 rounded-full font-bold text-xs uppercase tracking-wider hover:bg-black transition-all shadow-lg active:scale-95"
+          >
             Save Changes
           </button>
         </div>

@@ -15,6 +15,10 @@ interface AdminUser {
   lastName: string;
   role: string;
   isBlocked?: boolean;
+  isApproved?: boolean;
+  profileCompleted?: boolean;
+  packagePurchased?: boolean;
+  packageType?: string;
   avatar?: string;
   createdAt: string;
   sitterBookingsCount: number;
@@ -129,6 +133,28 @@ const AdminAllUsersSection: React.FC = () => {
     }
   };
 
+  const approveUser = async (user: AdminUser) => {
+    const action = user.isApproved ? 'revoke approval for' : 'approve';
+    if (!confirm(`${action === 'approve' ? 'Approve' : 'Revoke approval for'} ${user.firstName} ${user.lastName}?`)) return;
+    setActionLoading(user._id);
+    try {
+      const res = await fetch(`${API_BASE}/admin/users/${user._id}/approve`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUsers((prev) =>
+          prev.map((u) => (u._id === user._id ? { ...u, isApproved: data.isApproved } : u))
+        );
+      } else alert(data.message);
+    } catch {
+      alert('Network error');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const deleteUser = async (user: AdminUser) => {
     if (!confirm(`Delete ${user.firstName} ${user.lastName}? This cannot be undone.`)) return;
     setActionLoading(user._id);
@@ -224,6 +250,16 @@ const AdminAllUsersSection: React.FC = () => {
                                 <Ban size={10} /> Blocked
                               </span>
                             )}
+                            {(user.role === 'owner' || user.role === 'sitter') && (
+                              <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                                user.isApproved
+                                  ? 'bg-emerald-50 text-emerald-700'
+                                  : 'bg-amber-50 text-amber-700'
+                              }`}>
+                                {user.isApproved ? <CheckCircle size={10} /> : <Clock size={10} />}
+                                {user.isApproved ? 'Approved' : 'Pending'}
+                              </span>
+                            )}
                           </div>
                           <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                             <Mail size={11} /> {user.email}
@@ -248,6 +284,23 @@ const AdminAllUsersSection: React.FC = () => {
                         </button>
                         {!isAdmin && (
                           <>
+                            <button
+                              disabled={actionLoading === user._id}
+                              onClick={() => approveUser(user)}
+                              className={cn(
+                                'flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-bold transition-all',
+                                user.isApproved
+                                  ? 'bg-slate-50 text-slate-600 border border-slate-200'
+                                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                              )}
+                            >
+                              {actionLoading === user._id ? (
+                                <Loader2 size={14} className="animate-spin" />
+                              ) : (
+                                <CheckCircle size={14} />
+                              )}
+                              {user.isApproved ? 'Revoke' : 'Approve'}
+                            </button>
                             <button
                               disabled={actionLoading === user._id}
                               onClick={() => toggleBlock(user)}

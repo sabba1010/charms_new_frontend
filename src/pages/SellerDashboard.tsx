@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ChevronRight, Bell } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ChevronRight, Bell, Clock, ArrowRight, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SellerSidebar from '../components/seller/SellerSidebar';
 import SellerStatsCards from '../components/seller/SellerStatsCards';
@@ -24,6 +24,7 @@ import logo from '../assets/logo/OPPAS LOGO (1).png';
 
 const SellerDashboard: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isUnderReview, setIsUnderReview] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
@@ -31,12 +32,18 @@ const SellerDashboard: React.FC = () => {
   const [checkingStatus, setCheckingStatus] = useState(true);
   const { counts } = useSitterBookings();
 
+  // Approval & profile gate state
+  type GateState = 'locked' | 'profile_pending' | 'ready';
+  const [gateState, setGateState] = useState<GateState>('locked');
+  const [approvalCheckDone, setApprovalCheckDone] = useState(false);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get('tab');
     if (tab) setActiveTab(tab);
   }, [location]);
 
+  // Check listing review status (existing)
   useEffect(() => {
     const checkStatus = async () => {
       try {
@@ -68,6 +75,37 @@ const SellerDashboard: React.FC = () => {
     checkStatus();
   }, []);
 
+  // Check admin approval + profile completion
+  useEffect(() => {
+    const fetchApprovalStatus = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const apiUrl = import.meta.env.VITE_API_URL || 'https://clietn16-backend.vercel.app/api';
+        const res = await fetch(`${apiUrl}/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (data.success && data.user) {
+          const u = data.user;
+          const approved = !!u.isApproved;
+          const profileDone = !!u.profileCompleted;
+          if (!approved) {
+            setGateState('locked');
+          } else if (approved && !profileDone) {
+            setGateState('profile_pending');
+            setActiveTab('profile');
+          } else {
+            setGateState('ready');
+          }
+        }
+      } catch (e) {
+        console.error('Failed to check approval status', e);
+      } finally {
+        setApprovalCheckDone(true);
+      }
+    };
+    fetchApprovalStatus();
+  }, []);
+
   const getPageTitle = () => {
     switch (activeTab) {
       case 'dashboard': return 'Hello omiman !';
@@ -92,6 +130,23 @@ const SellerDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#fcfcfc] flex pt-[72px] relative">
+
+      {/* ── GATE: Awaiting Admin Approval ── */}
+      {gateState === 'locked' && approvalCheckDone && !isUnderReview && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center backdrop-blur-md bg-white/40">
+          <div className="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 text-center max-w-md mx-4">
+            <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-amber-100">
+              <Clock className="w-10 h-10" />
+            </div>
+            <h2 className="text-[24px] font-bold text-slate-800 mb-4 font-serif">Awaiting Admin Approval</h2>
+            <p className="text-slate-500 text-[15px] leading-relaxed font-medium">
+              Your account is pending admin approval. Once approved, you'll be directed to complete your profile to unlock all features.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── GATE: Listing Under Review (existing) ── */}
       {isUnderReview && !checkingStatus && (
         <div className="absolute inset-0 z-[100] flex items-center justify-center backdrop-blur-md bg-white/40">
           <div className="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 text-center max-w-md mx-4 transform transition-all">
@@ -108,7 +163,7 @@ const SellerDashboard: React.FC = () => {
         </div>
       )}
 
-      <div className={`flex flex-1 w-full transition-all duration-500 ${isUnderReview && !checkingStatus ? 'blur-md pointer-events-none select-none opacity-40' : ''}`}>
+      <div className={`flex flex-1 w-full transition-all duration-500 ${(isUnderReview || gateState === 'locked') && approvalCheckDone ? 'blur-md pointer-events-none select-none opacity-40' : ''}`}>
         {/* Sidebar */}
         <SellerSidebar activeTab={activeTab} setActiveTab={setActiveTab} bookingCounts={counts} />
 
@@ -157,6 +212,31 @@ const SellerDashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Profile completion CTA banner — sitter */}
+        {gateState === 'profile_pending' && activeTab !== 'profile' && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 bg-gradient-to-r from-[#F8F5ED] to-[#EEF2E8] border border-[#D8C89A] rounded-2xl p-6 flex items-center justify-between gap-4 shadow-sm"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#788564]/15 rounded-full flex items-center justify-center shrink-0">
+                <User className="text-[#788564]" size={22} />
+              </div>
+              <div>
+                <p className="text-[14px] font-bold text-[#2D2926]">Complete Your Sitter Profile to Unlock All Features</p>
+                <p className="text-[12px] text-[#7A6E62] mt-0.5">Your account is approved! Set up your profile to access all sitter dashboard features.</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="flex items-center gap-2 bg-[#788564] text-white px-5 py-2.5 rounded-full text-[12px] font-bold hover:bg-[#626E51] transition-all shrink-0"
+            >
+              Complete Now <ArrowRight size={13} />
+            </button>
+          </motion.div>
+        )}
+
         {/* Dynamic Content */}
         <AnimatePresence mode="wait">
           <motion.div
@@ -203,7 +283,7 @@ const SellerDashboard: React.FC = () => {
             ) : activeTab === 'wallet' ? (
               <SellerWalletSection />
             ) : activeTab === 'profile' ? (
-              <SellerProfileSettings />
+              <SellerProfileSettings onProfileCompleted={() => setGateState('ready')} />
             ) : activeTab === 'bookings-calendar' ? (
               <SellerBookingsCalendar />
             ) : activeTab === 'bookings-pending' ? (
