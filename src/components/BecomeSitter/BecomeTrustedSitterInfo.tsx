@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 // Using placeholderImg as a temporary placeholder until you send the new picture
-import placeholderImg from '../../assets/logo/Become a sitter page.png';
+import placeholderImg from '../../assets/logo/Photo on Find a sitter.png';
 
 const BecomeTrustedSitterInfo = () => {
   return (
