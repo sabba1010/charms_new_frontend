@@ -95,7 +95,17 @@ const ProfileSection = ({ onProfileCompleted }: { onProfileCompleted?: () => voi
           });
           // Support both old boolean-object format and new string-array format
           if (Array.isArray(u.homeFeatures)) {
-            setHomeFeatures(u.homeFeatures);
+            if (u.homeFeatures.length > 0 && typeof u.homeFeatures[0] === 'object') {
+              const legacyObj = u.homeFeatures[0];
+              const legacy: string[] = [];
+              if (legacyObj.nonSmoking)       legacy.push('Non smoking, secure family home');
+              if (legacyObj.spaciousBackyard) legacy.push('Spacious backyard with a pool');
+              if (legacyObj.securityAlarm)    legacy.push('Security alarm system and electric gate');
+              if (legacyObj.homeChecks)       legacy.push('Basic home security checks');
+              setHomeFeatures(legacy);
+            } else {
+              setHomeFeatures(u.homeFeatures);
+            }
           } else if (u.homeFeatures && typeof u.homeFeatures === 'object') {
             const legacy: string[] = [];
             if (u.homeFeatures.nonSmoking)       legacy.push('Non smoking, secure family home');
