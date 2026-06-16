@@ -15,15 +15,17 @@ const Home = () => {
   return (
     <div className="flex flex-col w-full">
       <Hero />
-      <HowItWorksSection />
-      {/* <TrustedCareInfoSection /> */}
-      {/* <BecomeTrustedSitterInfo /> */}
-      <SafeHandsSection />
-      <TrustAndSittersSection />
-      {/* <ChooseListingsSection /> */}
       <WhatWeOfferSection />
+      <SafeHandsSection />
+      <HowItWorksSection />
+      <TrustAndSittersSection />
+      
       <Testimonials />
       <GetStartedCTA />
+      
+      {/* <TrustedCareInfoSection /> */}
+      {/* <BecomeTrustedSitterInfo /> */}
+      {/* <ChooseListingsSection /> */}
       {/* <Filter /> */}
     </div>
   );
