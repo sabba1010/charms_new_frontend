@@ -56,7 +56,7 @@ const ContactFormSection = () => {
                 icon: Mail, 
                 title: "Email", 
                 desc: "Reach out anytime for support", 
-                detail: "charmanainevanderrijst@gamil.com" 
+                detail: "info@houseandpaw.co.za" 
               },
               { 
                 icon: MapPin, 
