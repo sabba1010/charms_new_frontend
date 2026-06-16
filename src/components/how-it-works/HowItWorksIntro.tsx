@@ -35,7 +35,7 @@ const HowItWorksIntro = () => {
               {[
                 { step: "Step 1: Create Your Profile", desc: "Register an account and choose the membership package that best suits your needs. Complete your profile with information about yourself, your pets, your home, and the type of care you’re looking for." },
                 { step: "Step 2: Verify Your Profile", desc: "To help build a safer and more trusted community, owners have the option to complete identity and address verification." },
-                { step: "Step 3: Create Your Listing", desc: "Post a listing outlining your requirements, including your location, travel dates, the services you need, and any important information about your pets or home." },
+                { step: "Step 3: Create Your Listing (Job Listing)", desc: "Post a listing outlining your requirements, including your location, travel dates, the services you need, and any important information about your pets or home." },
                 { step: "Step 4: Review Applications", desc: "Sitters can browse available listings and apply for opportunities that match their experience and availability. You’ll be able to review sitter profiles, verification badges, experience, and reviews before deciding who may be the best fit." },
                 { step: "Step 5: Connect & Arrange Care", desc: "Use our secure messaging system to communicate directly with sitters, ask questions, discuss expectations, and arrange the details of the sit." },
                 { step: "Step 6: Leave a Review", desc: "After the service is completed, both owners and sitters can leave reviews, helping to build trusted reputations within the House & Paw community." },
