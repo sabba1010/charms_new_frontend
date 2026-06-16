@@ -158,8 +158,8 @@ interface SellerAddListingProps {
 }
 
 const SellerAddListing: React.FC<SellerAddListingProps> = ({ isRegistrationFlow = false, onContinueRegistration }) => {
-  const [step, setStep] = useState(1);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [step, setStep] = useState(2);
+  const [selectedType, setSelectedType] = useState<string | null>('service');
   const [selectedPackage, setSelectedPackage] = useState<string>('basic');
 
   // Form fields state
