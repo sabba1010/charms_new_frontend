@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, User, Globe, FileText, Heart, Mail, Power, Star, Bell, LayoutDashboard, LayoutList, BarChart3, Layers, ShieldAlert, PlusCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import logo from '../../assets/300-logo-white.gif';
+import logo from '../../assets/logo/300-logo-mkv copy.svg';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,7 +67,7 @@ const Navbar = () => {
         <div className="flex items-center gap-10">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="Home Paw" className="h-10 md:h-11 w-auto object-contain" />
+            <img src={logo} alt="Home Paw" className="h-14 md:h-16 w-auto object-contain" />
             {/* <span className="text-white font-serif text-[20px] font-bold hidden sm:block">Home Paw</span> */}
           </Link>
 

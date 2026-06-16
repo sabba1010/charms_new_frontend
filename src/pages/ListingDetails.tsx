@@ -217,8 +217,8 @@ const ListingDetails = () => {
 
   const host = {
     id: listing.user?._id || listing.user,
-    name: listing.user ? `${listing.user.firstName || ''} ${listing.user.lastName || ''}`.trim() || listing.user.username || 'System Sitter' : 'Oppas Haven Sitter',
-    email: listing.user?.email || 'sitter@oppashaven.com',
+    name: listing.user ? `${listing.user.firstName || ''} ${listing.user.lastName || ''}`.trim() || listing.user.username || 'System Sitter' : 'House & Paw Sitter',
+    email: listing.user?.email || 'sitter@houseandpaw.com',
     avatar: listing.logo ? getImageUrl(listing.logo) : "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&h=200&fit=crop"
   };
 

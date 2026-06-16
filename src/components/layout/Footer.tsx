@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../../assets/300-logo-white.gif';
+import logo from '../../assets/logo/300-logo-mkv copy.svg';
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Brand Column */}
         <div className="space-y-6">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Home Paw" className="h-10 md:h-12 w-auto object-contain" />
+            <img src={logo} alt="Home Paw" className="h-14 md:h-16 w-auto object-contain" />
           </Link>
           <p className="text-sm leading-relaxed max-w-xs text-slate-400">
             Trusted pet and home care across South Africa. Verified sitters, real reviews, peace of mind.
@@ -32,6 +32,7 @@ const Footer = () => {
           <ul className="space-y-4 text-sm">
             <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
             <li><Link to="/how-it-works" className="hover:text-white transition-colors">How it works</Link></li>
+            <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
             <li><Link to="/become-sitter" className="hover:text-white transition-colors">Become a sitter</Link></li>
             <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
           </ul>

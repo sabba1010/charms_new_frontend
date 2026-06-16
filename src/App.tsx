@@ -18,6 +18,7 @@ import ListingDetails from './pages/ListingDetails';
 import JobDetails from './pages/JobDetails';
 import JobsOffered from './pages/JobsOffered';
 import UserProfile from './pages/UserProfile';
+import About from './pages/About';
 import ScrollToTop from './components/utils/ScrollToTop';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="/jobs-offered" element={<JobsOffered />} />
             <Route path="/jobs/:id" element={<JobDetails />} />
             <Route path="/user-profile/:id" element={<UserProfile />} />
+            <Route path="/about" element={<About />} />
           </Routes>
         </main>
         <Footer />
